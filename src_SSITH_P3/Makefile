@@ -89,12 +89,9 @@ TOPMODULE = mkP3_Core
 # More bsc compilation flags
 BSC_COMPILATION_FLAGS += \
 	-keep-fires -aggressive-conditions \
-	-no-warn-action-shadowing \
+	-no-warn-action-shadowing -no-show-timestamps \
 	-suppress-warnings G0020    \
-	+RTS -K128M -RTS  -show-range-conflict \
-	-unspecified-to X -opt-undetermined-vals \
-	-steps-max-intervals 10000000 \
-	-steps-warn-interval 1000000
+	+RTS -K128M -RTS  -show-range-conflict
 
 # ================================================================
 # Generate Bluespec CHERI tag controller source file
