@@ -179,8 +179,7 @@ module mkSoC_Top #(Reset dm_power_on_reset)
       manager_vector = newVector;
 
    // CPU mem interface to fabric
-   let mem_manager_num = imem_master_num;
-   manager_vector[mem_manager_num] = corew.cpu_mem_manager;
+   manager_vector[imem_manager_num] = corew.cpu_mem_manager;
 
    // ----------------
    // SoC fabric subordinate connections
