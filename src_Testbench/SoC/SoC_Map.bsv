@@ -41,7 +41,7 @@ export  SoC_Map_Struct (..), soc_map_struct;
 
 export  SoC_Map_IFC (..), mkSoC_Map;
 
-export  Num_Manager;
+export  Num_Managers;
 export  imem_manager_num;
 export  dmem_manager_num;
 
