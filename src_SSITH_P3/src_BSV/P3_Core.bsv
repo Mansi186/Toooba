@@ -46,6 +46,7 @@ import PowerOnReset :: *;
 // The basic core
 import CoreW_IFC :: *;
 import CoreW     :: *;
+import Praesidio_CoreWW :: *;
 
 // External interrupt request interface
 import PLIC :: *;    // for PLIC_Source_IFC type which is exposed at P3_Core interface
