@@ -157,6 +157,8 @@ module mkP3_Core (P3_Core_IFC);
    // ================================================================
    // CoreW
    //     CPU + Near_Mem_IO (CLINT) + PLIC + Debug module (optional) + TV (optional)
+   // SoC address map specifying base and limit for memories, IPs, etc.
+   SoC_Map_IFC soc_map <- mkSoC_Map;
    Praesidio_CoreWW #(N_External_Interrupt_Sources, TAdd#(Wd_MId,2))
       corew <- mkPraesidioCoreWW (dm_power_on_reset, reset_by ndm_reset);
 
@@ -174,8 +176,8 @@ module mkP3_Core (P3_Core_IFC);
    Vector#(2, Range#(Wd_Addr)) route_vector = newVector;
    subordinate_vector[0] = axiShim.subordinate;
    route_vector[0] = Range {
-      base: soc_map.m_praesidio_conf_addr_range.base + soc.m_praesido_conf_addr_range.size,
-      size: 'h_FFFF_FFFF - soc_map.m_praesido_conf_addr_range.base - soc_map.m_praesido_conf_addr_range.size
+      base: soc_map.m_praesidio_conf_addr_range.base + soc_map.m_praesidio_conf_addr_range.size,
+      size: 'h_FFFF_FFFF - soc_map.m_praesidio_conf_addr_range.base - soc_map.m_praesidio_conf_addr_range.size
    };
    subordinate_vector[1] = corew.praesidio_config_subordinate;
    route_vector[1] = soc_map.m_praesidio_conf_addr_range;
