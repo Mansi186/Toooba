@@ -10,7 +10,7 @@ package P3_Core;
 //        - Near_Mem (ICache and DCache)
 //        - Near_Mem_IO (Timer, Software-interrupt, and other mem-mapped-locations)
 //        - External interrupt request lines
-//        - 2 x AXI4 Master interfaces (from DM and ICache, and from DCache)
+//        - 1 x AXI4 Manager interfaces from CPU(s)
 //    - RISC-V Debug Module (DM)
 //    - JTAG TAP interface for DM
 //    - Optional Tandem Verification trace stream output interface
@@ -69,12 +69,8 @@ interface P3_Core_IFC;
    // ----------------------------------------------------------------
    // Core CPU interfaces
 
-   // CPU IMem to Fabric master interface
-   interface AXI4_Master_Synth#(TAdd#(Wd_MId,1), Wd_Addr, Wd_Data,
-                                0, 0, 0, 0, 0)  master0;
-
-   interface AXI4_Master_Synth#(TAdd#(Wd_MId,1), Wd_Addr, Wd_Data,
-                                0, 0, 0, 0, 0)  master1;
+   interface AXI4_Manager_Synth#(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+                                0, 0, 0, 0, 0)  manager;
 
    // External interrupt sources
    (* always_ready, always_enabled, prefix="" *)
@@ -160,8 +156,31 @@ module mkP3_Core (P3_Core_IFC);
    // ================================================================
    // CoreW
    //     CPU + Near_Mem_IO (CLINT) + PLIC + Debug module (optional) + TV (optional)
-   CoreW_IFC #(N_External_Interrupt_Sources)  corew <- mkCoreW (dm_power_on_reset,
-								reset_by ndm_reset);
+   Praesidio_CoreWW #(N_External_Interrupt_Sources, TAdd#(Wd_MId,2))
+      corew <- mkPraesidioCoreWW (dm_power_on_reset, reset_by ndm_reset);
+
+   AXI4_ManagerSubordinate_Shim #(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+      0, 0, 0, 0, 0) axiShim <- mkAXI4ManagerSubordinateShimFF;
+
+   Vector#(1, AXI4_Manager #(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+                                      0, 0, 0, 0, 0))
+      manager_vector = newVector;
+   manager_vector[0] = corew.cpu_mem_manager;
+
+   Vector#(2, AXI4_Subordinate #(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+                                    0, 0, 0, 0, 0))
+      subordinate_vector = newVector;
+   Vector#(2, Range#(Wd_Addr)) route_vector = newVector;
+   subordinate_vector[0] = axiShim.subordinate;
+   route_vector[0] = Range {
+      base: soc_map.m_praesidio_conf_addr_range.base + soc.m_praesido_conf_addr_range.size,
+      size: 'h_FFFF_FFFF - soc_map.m_praesido_conf_addr_range.base - soc_map.m_praesido_conf_addr_range.size
+   };
+   subordinate_vector[1] = corew.praesidio_config_subordinate;
+   route_vector[1] = soc_map.m_praesidio_conf_addr_range;
+
+   let bus <- mkAXI4Bus (routeFromMappingTable(route_vector),
+                         manager_vector, subordinate_vector);
 
    // ================================================================
    // Tie-offs (not used in SSITH GFE)
@@ -293,16 +312,12 @@ module mkP3_Core (P3_Core_IFC);
 
    // ================================================================
    // INTERFACE
-   let master0_synth <- toAXI4_Master_Synth(corew.cpu_imem_master);
-   let master1_synth <- toAXI4_Master_Synth(corew.cpu_dmem_master);
+   let manager_synth <- toAXI4_Manager_Synth(axiShim.manager);
    // ----------------------------------------------------------------
    // Core CPU interfaces
 
-   // CPU IMem to Fabric master interface
-   interface AXI4_Master_Synth master0 = master0_synth;
-
-   // CPU DMem to Fabric master interface
-   interface AXI4_Master_Synth master1 = master1_synth;
+   // CPU IMem to Fabric manager interface
+   interface AXI4_Manager_Synth manager = manager_synth;
 
    // External interrupts
    method  Action interrupt_reqs (Bit #(N_External_Interrupt_Sources) reqs);

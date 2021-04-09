@@ -88,6 +88,7 @@ endfunction
 interface SoC_Map_IFC;
    (* always_ready *)   method  Range#(Wd_Addr)  m_plic_addr_range;
    (* always_ready *)   method  Range#(Wd_Addr)  m_near_mem_io_addr_range;
+   (* always_ready *)   method  Range#(Wd_Addr)  m_praesidio_conf_addr_range;
    (* always_ready *)   method  Range#(Wd_Addr)  m_flash_mem_addr_range;
    (* always_ready *)   method  Range#(Wd_Addr)  m_ethernet_0_addr_range;
    (* always_ready *)   method  Range#(Wd_Addr)  m_dma_0_addr_range;
@@ -123,6 +124,13 @@ module mkSoC_Map (SoC_Map_IFC);
    let plic_addr_range = Range {
       base: 'h_0C00_0000,
       size: 'h_0040_0000    // 4M
+   };
+
+   // ----------------------------------------------------------------
+   // Praesidio configuration address range
+   let praesidio_conf_addr_range = Range {
+      base: 'h_0300_0000,
+      size: 'h_0000_1000
    };
 
    // ----------------------------------------------------------------
@@ -245,6 +253,7 @@ module mkSoC_Map (SoC_Map_IFC);
 		      || fn_is_gpio2_addr (addr)
 		      || fn_is_xdma_control (addr)
 		      || fn_is_xdma_ecam (addr)
+		      || inRange(praesidio_conf_addr_range, addr)
 		      )
 		  )
 	      );
@@ -261,6 +270,7 @@ module mkSoC_Map (SoC_Map_IFC);
    // INTERFACE
 
    method  Range#(Wd_Addr)  m_plic_addr_range = plic_addr_range;
+   method  Range#(Wd_Addr)  m_praesidio_conf_addr_range = praesidio_conf_addr_range;
    method  Range#(Wd_Addr)  m_near_mem_io_addr_range = near_mem_io_addr_range;
    method  Range#(Wd_Addr)  m_flash_mem_addr_range = flash_mem_addr_range;
    method  Range#(Wd_Addr)  m_ethernet_0_addr_range = ethernet_0_addr_range;
