@@ -19,14 +19,14 @@ package SoC_Map;
 
 // ================================================================
 // This module defines the overall 'address map' of the SoC, showing
-// the addresses serviced by each slave IP, and which addresses are
+// the addresses serviced by each subordinate IP, and which addresses are
 // memory vs. I/O.
 
 // ***** WARNING! WARNING! WARNING! *****
 
 // During system integration, this address map should be identical to
 // the system interconnect settings (e.g., routing of requests between
-// masters and slaves).  This map is also needed by software so that
+// managers and subordinates).  This map is also needed by software so that
 // it knows how to address various IPs.
 
 // This module contains no state; it just has constants, and so can be
@@ -41,9 +41,9 @@ export  SoC_Map_Struct (..), soc_map_struct;
 
 export  SoC_Map_IFC (..), mkSoC_Map;
 
-export  Num_Masters;
-export  imem_master_num;
-export  dmem_master_num;
+export  Num_Manager;
+export  imem_manager_num;
+export  dmem_manager_num;
 
 export  Num_Subordinates;
 export  Wd_SId;
@@ -249,12 +249,12 @@ module mkSoC_Map (SoC_Map_IFC);
 endmodule
 
 // ================================================================
-// Count and master-numbers of masters in the fabric.
+// Count and manager-numbers of managers in the fabric.
 
-typedef 2 Num_Masters;
+typedef 2 Num_Managers;
 
-Integer imem_master_num = 0;
-Integer dmem_master_num = 1;
+Integer imem_manager_num = 0;
+Integer dmem_manager_num = 1;
 
 // ================================================================
 // Count and subordinate-numbers of subordinates in the fabric.
@@ -268,7 +268,7 @@ Integer praesidio_subordinate_num       = 3;
 
 // ================================================================
 // Width of fabric 'id' buses
-typedef TAdd#(TAdd#(Wd_MId, TLog#(Num_Masters)),1) Wd_SId;
+typedef TAdd#(TAdd#(Wd_MId, TLog#(Num_Managers)),1) Wd_SId;
 
 // ================================================================
 // Interrupt request numbers (== index in to vector of
