@@ -70,8 +70,12 @@ interface P3_Core_IFC;
    // ----------------------------------------------------------------
    // Core CPU interfaces
 
+   // Need to use  master instead of manager for now to make minimal changes in the vivado project
    interface AXI4_Manager_Synth#(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
-                                0, 0, 0, 0, 0)  manager;
+                                0, 0, 0, 0, 0)  master0;
+
+   interface AXI4_Manager_Synth#(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+                                0, 0, 0, 0, 0)  master1;
 
    // External interrupt sources
    (* always_ready, always_enabled, prefix="" *)
@@ -320,7 +324,9 @@ module mkP3_Core (P3_Core_IFC);
    // Core CPU interfaces
 
    // CPU IMem to Fabric manager interface
-   interface AXI4_Manager_Synth manager = manager_synth;
+   interface AXI4_Manager_Synth master0 = manager_synth;
+
+   interface AXI4_Manager_Synth master1 = culDeSac;
 
    // External interrupts
    method  Action interrupt_reqs (Bit #(N_External_Interrupt_Sources) reqs);
