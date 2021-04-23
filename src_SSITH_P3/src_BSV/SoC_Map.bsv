@@ -35,6 +35,10 @@ export  N_External_Interrupt_Sources;
 export  n_external_interrupt_sources;
 export  irq_num_uart16550_0;
 
+export Wd_SId;
+
+typedef TAdd#(Wd_MId, 2) Wd_SId;
+
 // ================================================================
 // Bluespec library imports
 
