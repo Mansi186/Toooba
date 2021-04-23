@@ -3,7 +3,7 @@
 
 OUTPUT_ARCH( "riscv" )
 
-__mem   = 0x80000000; /* Compile starting with 8 for simulation or C for hardware */
+__mem   = 0xC0000000; /* Compile starting with 8 for simulation or C for hardware */
 
 SECTIONS
 {
