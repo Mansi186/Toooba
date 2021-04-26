@@ -238,8 +238,8 @@ instance BitVectorable #(EventsCoreMem, SizeOf#(HpmRpt), EventsCoreMemElements) 
    function Vector#(EventsCoreMemElements, HpmRpt) to_vector(EventsCoreMem e) =
       reverse(unpack(pack(e)));
 endinstance
-instance BitVectorable #(EventsTransExe, SizeOf#(SupCnt), EventsTransExeElements) provisos (Bits #(EventsTransExe, m));
-   function Vector#(EventsTransExeElements, SupCnt) to_vector(EventsTransExe e) =
+instance BitVectorable #(EventsTransExe, Report_Width, EventsTransExeElements) provisos (Bits #(EventsTransExe, m));
+   function Vector#(EventsTransExeElements, Bit#(Report_Width)) to_vector(EventsTransExe e) =
       reverse(unpack(pack(e)));
 endinstance
 instance BitVectorable #(EventsCache, SizeOf#(HpmRpt), EventsCacheElements) provisos (Bits #(EventsCache, m));
@@ -1121,7 +1121,30 @@ module mkCore#(CoreId coreId)(Core);
      EventsCache llMem = unpack(pack(events_llc_reg) | pack(l2Tlb.events));
      Vector #(16, Bit #(Report_Width)) llc_evts_vec = to_large_vector (llMem);
      Vector #(16, Bit #(Report_Width)) tgc_evts_vec = to_large_vector (events_tgc_reg);
-     Vector #(16, Bit #(Report_Width)) trans_exe_evts_vec = to_large_vector (renameStage.events);
+     EventsTransExe transExe = renameStage.events;
+     Bit#(Report_Width) executedInsts = 0;
+     Bit#(Report_Width) executedAluInsts = 0;
+     Bit#(Report_Width) executedFpuInsts = 0;
+     for(Integer i = 0; i < valueof(AluExeNum); i = i+1) begin
+          let alu_events = coreFix.aluExeIfc[i].events;
+          executedInsts = executedInsts + alu_events.evt_EXECUTED_INSTS;
+          executedAluInsts = executedAluInsts + alu_events.evt_EXECUTED_ALU_INSTS;
+     end
+     for(Integer i = 0; i < valueof(FpuMulDivExeNum); i = i+1) begin
+          let fpu_events = coreFix.fpuMulDivExeIfc[i].events;
+          executedInsts = executedInsts + fpu_events.evt_EXECUTED_INSTS;
+          executedFpuInsts = executedFpuInsts + fpu_events.evt_EXECUTED_FPU_INSTS;
+     end
+
+     let mem_events = coreFix.memExeIfc.events_trans_exe;
+     executedInsts = executedInsts + mem_events.evt_EXECUTED_INSTS;
+     transExe.evt_EXECUTED_INSTS = executedInsts;
+     transExe.evt_EXECUTED_ALU_INSTS = executedAluInsts;
+     transExe.evt_EXECUTED_FPU_INSTS = executedFpuInsts;
+     transExe.evt_EXECUTED_MEM_INSTS = mem_events.evt_EXECUTED_MEM_INSTS;
+
+
+     Vector #(16, Bit #(Report_Width)) trans_exe_evts_vec = to_large_vector (transExe);
 
 
      let events = append (null_evt, core_evts_vec);

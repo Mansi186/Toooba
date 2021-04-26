@@ -1118,9 +1118,13 @@ typedef struct {
 typedef TDiv#(SizeOf#(EventsCoreMem),Report_Width) EventsCoreMemElements;
 
 typedef struct {
-   SupCnt evt_RENAMED_INST;
+   Bit#(Report_Width) evt_RENAMED_INSTS;
+   Bit#(Report_Width) evt_EXECUTED_ALU_INSTS;
+   Bit#(Report_Width) evt_EXECUTED_FPU_INSTS;
+   Bit#(Report_Width) evt_EXECUTED_MEM_INSTS;
+   Bit#(Report_Width) evt_EXECUTED_INSTS;
 } EventsTransExe deriving (Bits, FShow);
-typedef TDiv#(SizeOf#(EventsTransExe),SizeOf#(SupCnt)) EventsTransExeElements;
+typedef TDiv#(SizeOf#(EventsTransExe), Report_Width) EventsTransExeElements;
 
 
 `endif
