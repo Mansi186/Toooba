@@ -30,12 +30,6 @@ int performPraesidioConfigOps(unsigned long long argAddress, enum ConfigOp op) {
       return -1;
   }
   configAddress[0] = argAddress;
-//  asm volatile (
-//    "sw %0 0(%1);"
-//    : //output
-//    : "r"(argAddress), "r"(configAddress) //input
-//    : //clobbered
-//  );
   return 0;
 }
 
