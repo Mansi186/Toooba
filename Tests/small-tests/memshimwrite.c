@@ -5,7 +5,7 @@ int main(void) {
         "li t0, 0x80;"//Event ID for AXI4 aw
         "csrw mhpmevent3, t0;"
         "csrr t1, mhpmcounter3;"
-        "li t0, 20;"
+        "li t0, 100;"
         "loop: addi t0, t0, -1;"
         "auipc t2, 0x100;"
         "srli t2, t2, 2;"
