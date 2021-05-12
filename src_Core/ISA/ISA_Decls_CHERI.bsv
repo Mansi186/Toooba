@@ -61,18 +61,6 @@ typedef struct {
 CSR_XCapCause noCapCause = CSR_XCapCause {cheri_exc_code: cheriExcNone,
                                           cheri_exc_reg: unpack(0)};
 
-function Bit#(64) xccsr_to_word(CSR_XCapCause xccsr);
-    return zeroExtend({xccsr.cheri_exc_reg, pack(xccsr.cheri_exc_code), 3'b0, 1'b1, 1'b1});
-endfunction
-
-function Reg#(Bit#(64)) csr_capcause(Reg#(CSR_XCapCause) r);
-    return (interface Reg;
-        method Bit#(64) _read = xccsr_to_word(r._read);
-        method Action _write(Bit#(64) x) =
-            r._write(CSR_XCapCause{cheri_exc_reg: x[15:10], cheri_exc_code: unpack(x[9:5]) });
-    endinterface);
-endfunction
-
 // SCR map
 
 typedef struct { Bit#(5) addr; } SCR deriving(Bits, Eq);
@@ -195,7 +183,8 @@ Bit #(5) f5rs2_cap_CClearReg   = 5'h0d;
 Bit #(5) f5rs2_cap_CGetAddr    = 5'h0f;
 Bit #(5) f5rs2_cap_CClearFPReg = 5'h10;
 Bit #(5) f5rs2_cap_CSealEntry  = 5'h11;
-// 5'h12-5'h1f unused (5'h1f reserved for 1-reg instructions
+Bit #(5) f5rs2_cap_CLoadTags   = 5'h12;
+// 5'h13-5'h1f unused (5'h1f reserved for 1-reg instructions)
 
 // ================================================================
 // f7_cap_{Load, Store} opcode subdivision

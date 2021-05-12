@@ -513,6 +513,8 @@ typedef struct {
                             // mstatus.mprv), accessing page with U=1 will NOT
                             // fault
     Bit#(44) basePPN; // ppn of root page table
+    Bit#(1) globalCapLoadGenU;
+    Bit#(1) globalCapLoadGenS;
 `ifdef SECURITY
     // sanctum page walk check
     Bit#(64) sanctum_evbase;
@@ -538,7 +540,9 @@ instance DefaultValue#(VMInfo);
         sv39: False,
         exeReadable: False,
         userAccessibleByS: False,
-        basePPN: 0
+        basePPN: 0,
+        globalCapLoadGenU: 0,
+        globalCapLoadGenS: 0
 `ifdef SECURITY
         , sanctum_evbase:   maxBound,
         sanctum_evmask:     0,
@@ -695,6 +699,9 @@ typedef struct {
     // For STORE: this is store data shifted to be 64-bit aligned
     // For AMO: this is UNshifted data (like normal mem req)
     MemTaggedData data;
+    Bool loadTags;
+    // Whether the request is for tags rather than data
+    // For non-LOAD: always False
 } MMIOCRq deriving(Bits, Eq, FShow);
 
 // resp from platform to core

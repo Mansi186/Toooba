@@ -51,7 +51,7 @@ typedef struct {
    Bit#(8) evt_LD_MISS;
    Bit#(8) evt_LD_MISS_LAT;
    Bit#(8) evt_ST;
-   Bit#(8) evt_ST_MISS;     // Unimplemented
+   Bit#(8) evt_ST_MISS;
    Bit#(8) evt_ST_MISS_LAT; // Unimplemented
    Bit#(8) evt_AMO;
    Bit#(8) evt_AMO_MISS;
@@ -223,6 +223,7 @@ typedef struct {
     MemDataByteEn byteEn; // valid when op == Sc
     MemTaggedData data; // valid when op == Sc/Amo
     AmoInst amoInst; // valid when op == Amo
+    Bool loadTags; // valid when op == Ld
 } ProcRq#(type idT) deriving(Bits, Eq, FShow);
 
 interface L1ProcReq#(type idT);
