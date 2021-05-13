@@ -174,12 +174,13 @@ module mkSoC_Top #(Reset dm_power_on_reset)
    // SoC fabric manager connections
    // Note: see 'SoC_Map' for definitions
 
-   Vector#(1, AXI4_Manager #(TAdd#(Wd_MId,3), Wd_Addr, Wd_Data,
+   Vector#(2, AXI4_Manager #(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
                                       0, 0, 0, 0, 0))
       manager_vector = newVector;
 
    // CPU mem interface to fabric
-   manager_vector[imem_manager_num] = corew.cpu_mem_manager;
+   manager_vector[imem_manager_num] = corew.insecure_mem_manager;
+   manager_vector[dmem_manager_num] = corew.secure_mem_manager;
 
    // ----------------
    // SoC fabric subordinate connections
