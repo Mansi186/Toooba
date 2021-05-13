@@ -204,10 +204,6 @@ module mkSoC_Top #(Reset dm_power_on_reset)
    subordinate_vector[uart0_subordinate_num] = zeroSubordinateUserFields(uart0.slave);
    route_vector[uart0_subordinate_num] = soc_map.m_uart0_addr_range;
 
-   // Fabric to Praesidio Config
-   subordinate_vector[praesidio_subordinate_num] = corew.praesidio_config_subordinate;
-   route_vector[praesidio_subordinate_num] = soc_map.m_praesidio_conf_addr_range;
-
 `ifdef INCLUDE_ACCEL0
    // Fabric to accel0
    subordinate_vector[accel0_subordinate_num] = zeroSubordinateUserFields (accel0.slave);
