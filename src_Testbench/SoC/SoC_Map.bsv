@@ -268,7 +268,7 @@ Integer praesidio_subordinate_num       = 3;
 
 // ================================================================
 // Width of fabric 'id' buses
-typedef TAdd#(TAdd#(Wd_MId, TLog#(Num_Managers)),1) Wd_SId;
+typedef TAdd#(TAdd#(Wd_MId, TLog#(Num_Managers)),2) Wd_SId;
 
 // ================================================================
 // Interrupt request numbers (== index in to vector of
