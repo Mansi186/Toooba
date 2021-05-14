@@ -248,7 +248,7 @@ endinstance
 `endif
 
 (* synthesize *)
-module mkCore#(CoreId coreId)(Core);
+module mkCore#(CoreId coreId, Bool secure_world)(Core);
     let verbose = False;
 
    // ================================================================
@@ -677,6 +677,9 @@ module mkCore#(CoreId coreId)(Core);
 `ifdef INCLUDE_TANDEM_VERIF
        interface v_to_TV = map (toPut, v_f_to_TV);
 `endif
+       method Bool inSecureWorld;
+          return secure_world;
+       endmethod
 
     endinterface);
     CommitStage commitStage <- mkCommitStage(commitInput);

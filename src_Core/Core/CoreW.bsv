@@ -107,7 +107,7 @@ import DM_CPU_Req_Rsp ::*;
 // The Core module
 
 (* synthesize *)
-module mkCoreW #(Reset dm_power_on_reset)
+module mkCoreW #(Reset dm_power_on_reset, Bool secure_world)
                (CoreW_IFC #(N_External_Interrupt_Sources));
 
    // ================================================================
@@ -165,7 +165,7 @@ module mkCoreW #(Reset dm_power_on_reset)
 
    // RISCY-OOO processor
    // TODO: could have separate resets for each core.
-   Proc_IFC proc <- mkProc (reset_by all_harts_reset);
+   Proc_IFC proc <- mkProc (secure_world, reset_by all_harts_reset);
 
    // handle uncached interface
    let proc_uncached = extendIDFields (zeroMasterUserFields (proc.master1), 0);
@@ -509,7 +509,7 @@ endmodule: mkCoreW
 (* synthesize *)
 module mkCoreW_Synth #(Reset dm_power_on_reset)
                       (CoreW_IFC_Synth #(N_External_Interrupt_Sources));
-   let core <- mkCoreW (dm_power_on_reset);
+   let core <- mkCoreW (dm_power_on_reset, False);
    let cpu_imem_master_synth <- toAXI4_Master_Synth (core.cpu_imem_master);
    let cpu_dmem_master_synth <- toAXI4_Master_Synth (core.cpu_dmem_master);
 

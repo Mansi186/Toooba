@@ -135,6 +135,7 @@ interface CommitInput;
 `ifdef INCLUDE_TANDEM_VERIF
     interface Vector #(SupSize, Put #(Trace_Data2)) v_to_TV;
 `endif
+    method Bool inSecureWorld;
 endinterface
 
 typedef struct {
@@ -665,7 +666,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
         if (verbosity >= 1) begin
            $display ("instret:%0d  PC:0x%0h  instr:0x%08h", rg_serial_num, x.pc, x.orig_inst,
-                     "  iType:", fshow (x.iType), "    [doCommitTrap] %d", cur_cycle);
+                     "  iType:", fshow (x.iType), " secure:", fshow (inIfc.inSecureWorld), "    [doCommitTrap] %d", cur_cycle);
         end
         if (verbose) begin
            $display ("CommitStage.doCommitTrap_flush: deq_data:   ", fshow (x));

@@ -107,13 +107,13 @@ import Trace_Data2 :: *;
 // ================================================================
 
 (* synthesize *)
-module mkProc (Proc_IFC);
+module mkProc #(Bool secure_world) (Proc_IFC);
 
    // ----------------
     // cores
     Vector#(CoreNum, Core) core = ?;
     for(Integer i = 0; i < valueof(CoreNum); i = i+1) begin
-        core[i] <- mkCore(fromInteger(i));
+        core[i] <- mkCore(fromInteger(i), secure_world);
     end
 
    // ----------------
