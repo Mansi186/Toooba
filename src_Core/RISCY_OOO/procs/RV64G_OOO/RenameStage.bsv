@@ -588,7 +588,7 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
 
 `ifdef PERFORMANCE_MONITORING
         EventsTransExe events = unpack(0);
-        $display("Rename-SysInst: 1");
+        $display("%t Rename-SysInst: 1, pc_rename ", $time(), fshow(pc));
         events.evt_RENAMED_INSTS = 1;
         events_reg <= events;
 `endif
@@ -1177,7 +1177,6 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
 `endif
 `ifdef PERFORMANCE_MONITORING
         EventsTransExe events = unpack(0);
-        $display("Rename-NormalInst count:", fshow(renameCnt));
         events.evt_RENAMED_INSTS = zeroExtend(pack(renameCnt));
         events_reg <= events;
 `endif

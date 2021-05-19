@@ -1158,7 +1158,6 @@ module mkCore#(CoreId coreId)(Core);
      (* fire_when_enabled, no_implicit_conditions *)
      rule rl_send_perf_evts;
           csrf.send_performance_events (events);
-          $display("Core-TransExeEvents: ", fshow(trans_exe_evts_vec));
      endrule
 `endif
 
