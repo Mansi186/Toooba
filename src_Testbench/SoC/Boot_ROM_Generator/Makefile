@@ -6,19 +6,19 @@ default: tmpdir/fn_read_ROM_RV32.bsvi  tmpdir/fn_read_ROM_RV64.bsvi  tmpdir/fn_r
 
 tmpdir/fn_read_ROM_RV64.bsvi: tmpdir  gen_bootrom.exe
 	./gen_bootrom.exe  RV64  imaus  normal  >  tmpdir/boot_ROM_RV64.memhex
-	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_ROM_RV64.memhex  tmpdir/fn_read_ROM_RV64.bsvi
+	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_ROM_RV64.memhex  tmpdir/fn_read_ROM_RV64.bsvi  normal
 
 tmpdir/fn_read_ROM_RV32.bsvi: tmpdir  gen_bootrom.exe
 	./gen_bootrom.exe  RV32  imaus  normal  >  tmpdir/boot_ROM_RV32.memhex
-	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_ROM_RV32.memhex  tmpdir/fn_read_ROM_RV32.bsvi
+	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_ROM_RV32.memhex  tmpdir/fn_read_ROM_RV32.bsvi  normal
 
 tmpdir/fn_read_secROM_RV64.bsvi: tmpdir  gen_bootrom.exe
 	./gen_bootrom.exe  RV64  imaus  secure  >  tmpdir/boot_secROM_RV64.memhex
-	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_secROM_RV64.memhex  tmpdir/fn_read_secROM_RV64.bsvi
+	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_secROM_RV64.memhex  tmpdir/fn_read_secROM_RV64.bsvi  secure
 
 tmpdir/fn_read_secROM_RV32.bsvi: tmpdir  gen_bootrom.exe
 	./gen_bootrom.exe  RV32  imaus  secure  >  tmpdir/boot_secROM_RV32.memhex
-	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_secROM_RV32.memhex  tmpdir/fn_read_secROM_RV32.bsvi
+	./Gen_BSV_fn_read_ROM.py  tmpdir/boot_secROM_RV32.memhex  tmpdir/fn_read_secROM_RV32.bsvi  secure
 
 gen_bootrom.exe: tmpdir  gen_bootrom.cc
 	$(CXX)  -o $@  -std=c++11  gen_bootrom.cc

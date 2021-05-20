@@ -18,7 +18,7 @@ def main (argv = None):
         print_usage (argv)
         return 0
 
-    if (len (argv) != 3):
+    if (len (argv) != 4):
         print_usage (argv)
         return 1
 
@@ -34,7 +34,15 @@ def main (argv = None):
         sys.stderr.write ("ERROR: unable to open file '{0}' for output\n".format (argv [2]))
         return 1
 
-    addr_lim = gen_BSV_ROM_function (fin, fout)
+    if argv [3] == "normal":
+        secure = False
+    elif argv [3] == "secure":
+        secure = True
+    else:
+        sys.stderr.write ("ERROR: invalid option '{0}'\n".format (argv [3]))
+        return 1
+
+    addr_lim = gen_BSV_ROM_function (fin, fout, secure)
     sys.stderr.write ("Wrote BSV ROM function into file '{0}'; address limit is: {1}\n".format (argv [2], addr_lim))
 
     fin.close ()
@@ -44,12 +52,12 @@ def main (argv = None):
 # ================================================================
 
 def print_usage (argv):
-    sys.stdout.write ("Usage:    {0}  <memhex input filename>  <BSV output filename>\n".format (argv [0]))
+    sys.stdout.write ("Usage:    {0}  <memhex input filename>  <BSV output filename> <normal/secure>\n".format (argv [0]))
     sys.stdout.write ("    The memhex file should contain 32b words\n")
 
 # ================================================================
 
-def gen_BSV_ROM_function (fin, fout):
+def gen_BSV_ROM_function (fin, fout, secure):
 
     # Read the memhex file
     lines = fin.readlines ()
@@ -84,25 +92,31 @@ def gen_BSV_ROM_function (fin, fout):
     fout.write ("\n")
     fout.write ("// Function for 4-bytes values at addrs aligned to 'b000\n")
     fout.write ("\n")
-    fout.write ("function Bit #(32) fn_read_ROM_0 (Bit #(n) addr);\n")
+    if secure:
+        fout.write ("function Bit #(32) fn_read_secROM_0 (Bit #(n) addr);\n")
+    else:
+        fout.write ("function Bit #(32) fn_read_ROM_0 (Bit #(n) addr);\n")
     fout.write ("   return\n")
     fout.write ("      case (addr)\n")
     for case_arm in case_arms_0:
         fout.write (case_arm)
     fout.write ("         default: 32'h_AAAA_AAAA;\n")
     fout.write ("      endcase;\n")
-    fout.write ("endfunction: fn_read_ROM_0\n")
+    fout.write ("endfunction\n")
     fout.write ("\n")
     fout.write ("// Function for 4-bytes values at addrs aligned to 'b100\n")
     fout.write ("\n")
-    fout.write ("function Bit #(32) fn_read_ROM_4 (Bit #(n) addr);\n")
+    if secure:
+        fout.write ("function Bit #(32) fn_read_secROM_4 (Bit #(n) addr);\n")
+    else:
+        fout.write ("function Bit #(32) fn_read_ROM_4 (Bit #(n) addr);\n")
     fout.write ("   return\n")
     fout.write ("      case (addr)\n")
     for case_arm in case_arms_4:
         fout.write (case_arm)
     fout.write ("         default: 32'h_AAAA_AAAA;\n")
     fout.write ("      endcase;\n")
-    fout.write ("endfunction: fn_read_ROM_4\n")
+    fout.write ("endfunction\n")
 
     return addr
 
