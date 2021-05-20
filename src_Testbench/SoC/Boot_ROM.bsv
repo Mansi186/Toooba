@@ -50,10 +50,12 @@ import SoC_Map     :: *;
 
 `ifdef RV32
 `include  "fn_read_ROM_RV32.bsvi"
+`include  "fn_read_secROM_RV32.bsvi"
 `endif
 
 `ifdef RV64
 `include  "fn_read_ROM_RV64.bsvi"
+`include  "fn_read_secROM_RV64.bsvi"
 `endif
 
 // ================================================================
@@ -91,7 +93,7 @@ endfunction
 // ================================================================
 
 (* synthesize *)
-module mkBoot_ROM (Boot_ROM_IFC);
+module mkBoot_ROM #(Bool secure) (Boot_ROM_IFC);
 
    // Verbosity: 0: quiet; 1: reads/writes
    Integer verbosity = 0;
@@ -127,16 +129,24 @@ module mkBoot_ROM (Boot_ROM_IFC);
 	 $display ("    ", fshow (rda));
       end
       else begin
-	 // Byte offset
-	 let byte_offset = rda.araddr - rg_addr_base;
-	 let rom_addr_0 = (byte_offset & (~ 'b_111));
-	 Bit #(32) d0 = fn_read_ROM_0 (rom_addr_0);
-	 let rom_addr_4 = (rom_addr_0 | 'b_100);
-	 Bit #(32) d4 = fn_read_ROM_4 (rom_addr_4);
-	 if ((valueOf (Wd_Data) == 32) && (byte_offset [2] == 1'b_1))
-	    data64 = { 0, d4 };
-	 else
-	    data64 = { d4, d0 };
+      // Byte offset
+      let byte_offset = rda.araddr - rg_addr_base;
+      let rom_addr_0 = (byte_offset & (~ 'b_111));
+      let rom_addr_4 = (rom_addr_0 | 'b_100);
+      Bit #(32) d0;
+      Bit #(32) d4 = fn_read_ROM_4 (rom_addr_4);
+      if(secure) begin
+         d0 = fn_read_secROM_0 (rom_addr_0);
+         d4 = fn_read_secROM_4 (rom_addr_4);
+      end
+      else begin
+         d0 = fn_read_ROM_0 (rom_addr_0);
+         d4 = fn_read_ROM_4 (rom_addr_4);
+      end
+      if ((valueOf (Wd_Data) == 32) && (byte_offset [2] == 1'b_1))
+         data64 = { 0, d4 };
+      else
+         data64 = { d4, d0 };
       end
 
       Bit #(Wd_Data_Periph) rdata  = truncate (data64);
