@@ -74,228 +74,240 @@ static std::string dts;
 
 static std::string dts_compile(const std::string& dts)
 {
-  // Convert the DTS to DTB
-  int dts_pipe[2];
-  pid_t dts_pid;
+    // Convert the DTS to DTB
+    int dts_pipe[2];
+    pid_t dts_pid;
 
-  if (pipe(dts_pipe) != 0 || (dts_pid = fork()) < 0) {
-    std::cerr << "Failed to fork dts child: " << strerror(errno) << std::endl;
-    exit(1);
-  }
-
-  // Child process to output dts
-  if (dts_pid == 0) {
-    close(dts_pipe[0]);
-    int step, len = dts.length();
-    const char *buf = dts.c_str();
-    for (int done = 0; done < len; done += step) {
-      step = write(dts_pipe[1], buf+done, len-done);
-      if (step == -1) {
-        std::cerr << "Failed to write dts: " << strerror(errno) << std::endl;
+    if (pipe(dts_pipe) != 0 || (dts_pid = fork()) < 0) {
+        std::cerr << "Failed to fork dts child: " << strerror(errno) << std::endl;
         exit(1);
-      }
     }
+
+    // Child process to output dts
+    if (dts_pid == 0) {
+        close(dts_pipe[0]);
+        int step, len = dts.length();
+        const char *buf = dts.c_str();
+        for (int done = 0; done < len; done += step) {
+            step = write(dts_pipe[1], buf+done, len-done);
+            if (step == -1) {
+                std::cerr << "Failed to write dts: " << strerror(errno) << std::endl;
+                exit(1);
+            }
+        }
+        close(dts_pipe[1]);
+        exit(0);
+    }
+
+    pid_t dtb_pid;
+    int dtb_pipe[2];
+    if (pipe(dtb_pipe) != 0 || (dtb_pid = fork()) < 0) {
+        std::cerr << "Failed to fork dtb child: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    // Child process to output dtb
+    if (dtb_pid == 0) {
+        dup2(dts_pipe[0], 0);
+        dup2(dtb_pipe[1], 1);
+        close(dts_pipe[0]);
+        close(dts_pipe[1]);
+        close(dtb_pipe[0]);
+        close(dtb_pipe[1]);
+        execl(DTC, DTC, "-O", "dtb", 0);
+        std::cerr << "Failed to run " DTC ": " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
     close(dts_pipe[1]);
-    exit(0);
-  }
-
-  pid_t dtb_pid;
-  int dtb_pipe[2];
-  if (pipe(dtb_pipe) != 0 || (dtb_pid = fork()) < 0) {
-    std::cerr << "Failed to fork dtb child: " << strerror(errno) << std::endl;
-    exit(1);
-  }
-
-  // Child process to output dtb
-  if (dtb_pid == 0) {
-    dup2(dts_pipe[0], 0);
-    dup2(dtb_pipe[1], 1);
     close(dts_pipe[0]);
-    close(dts_pipe[1]);
-    close(dtb_pipe[0]);
     close(dtb_pipe[1]);
-    execl(DTC, DTC, "-O", "dtb", 0);
-    std::cerr << "Failed to run " DTC ": " << strerror(errno) << std::endl;
-    exit(1);
-  }
 
-  close(dts_pipe[1]);
-  close(dts_pipe[0]);
-  close(dtb_pipe[1]);
+    // Read-out dtb
+    std::stringstream dtb;
 
-  // Read-out dtb
-  std::stringstream dtb;
+    int got;
+    char buf[4096];
+    while ((got = read(dtb_pipe[0], buf, sizeof(buf))) > 0) {
+        dtb.write(buf, got);
+    }
+    if (got == -1) {
+        std::cerr << "Failed to read dtb: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+    close(dtb_pipe[0]);
 
-  int got;
-  char buf[4096];
-  while ((got = read(dtb_pipe[0], buf, sizeof(buf))) > 0) {
-    dtb.write(buf, got);
-  }
-  if (got == -1) {
-    std::cerr << "Failed to read dtb: " << strerror(errno) << std::endl;
-    exit(1);
-  }
-  close(dtb_pipe[0]);
+    // Reap children
+    int status;
+    waitpid(dts_pid, &status, 0);
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        std::cerr << "Child dts process failed" << std::endl;
+        exit(1);
+    }
+    waitpid(dtb_pid, &status, 0);
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        std::cerr << "Child dtb process failed" << std::endl;
+        exit(1);
+    }
 
-  // Reap children
-  int status;
-  waitpid(dts_pid, &status, 0);
-  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-    std::cerr << "Child dts process failed" << std::endl;
-    exit(1);
-  }
-  waitpid(dtb_pid, &status, 0);
-  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-    std::cerr << "Child dtb process failed" << std::endl;
-    exit(1);
-  }
-
-  return dtb.str();
+    return dtb.str();
 }
 
-void make_dtb(int xlen, char *isa_string)
+void make_dtb(int xlen, char *isa_string, bool secure)
 {
-  const int reset_vec_size = 8;
+    const int reset_vec_size = 8;
 
-  uint64_t start_pc = DMEM_BASE;
+    uint64_t start_pc = secure ? ROM_BASE : DMEM_BASE;
 
-  uint32_t reset_vec[reset_vec_size] = {
-    0x297,                                      // auipc  t0,0x0
-    0x28593 + (reset_vec_size * 4 << 20),       // addi   a1, t0, &dtb
-    0xf1402573,                                 // csrr   a0, mhartid
-    xlen == 32 ?
-      0x0182a283u :                             // lw     t0,24(t0)
-      0x0182b283u,                              // ld     t0,24(t0)
-    0x28067,                                    // jr     t0
-    0,
-    (uint32_t) (start_pc & 0xffffffff),
-    (uint32_t) (start_pc >> 32)
-  };
+    uint32_t reset_vec[reset_vec_size] = {
+        0x297,                                      // auipc  t0,0x0
+        0x28593 + (reset_vec_size * 4 << 20),       // addi   a1, t0, &dtb
+        0xf1402573,                                 // csrr   a0, mhartid
+        xlen == 32 ?
+            0x0182a283u :                             // lw     t0,24(t0)
+            0x0182b283u,                              // ld     t0,24(t0)
+        0x28067,                                    // jr     t0
+        0,
+        (uint32_t) (start_pc & 0xffffffff),
+        (uint32_t) (start_pc >> 32)
+    };
 
-  std::vector<char> rom((char*)reset_vec, (char*)reset_vec + sizeof(reset_vec));
+    std::vector<char> rom((char*)reset_vec, (char*)reset_vec + sizeof(reset_vec));
 
-  std::stringstream s;
-  s << std::dec <<
-         "/dts-v1/;\n"
-         "\n"
-         "/ {\n"
-         "  #address-cells = <2>;\n"
-         "  #size-cells = <2>;\n"
-         "  compatible = \"ucbbar,spike-bare-dev\";\n"
-         "  model = \"ucbbar,spike-bare\";\n"
-         "  cpus {\n"
-         "    #address-cells = <1>;\n"
-         "    #size-cells = <0>;\n"
-         "    timebase-frequency = <" << CPU_HZ << ">;\n";
-  // For each processor
-  for (size_t i = 0; i < NUM_PROCS; i++) {
-    s << "    CPU" << i << ": cpu@" << i << " {\n"
-         "      device_type = \"cpu\";\n"
-         "      reg = <" << i << ">;\n"
-         "      status = \"okay\";\n"
-         "      compatible = \"riscv\";\n"
-         "      riscv,isa = \"rv" << xlen << isa_string << "\";\n"
-         "      mmu-type = \"riscv," << (xlen <= 32 ? "sv32" : "sv48") << "\";\n"
-         "      clock-frequency = <" << CPU_HZ << ">;\n"
-         "      CPU" << i << "_intc: interrupt-controller {\n"
-         "        #interrupt-cells = <1>;\n"
-         "        interrupt-controller;\n"
-         "        compatible = \"riscv,cpu-intc\";\n"
-         "      };\n"
-         "    };\n";
-  }
-  s <<   "  };\n";
-  // For each memory
-  uint64_t dmem_base = DMEM_BASE;
-  uint64_t dmem_size = DMEM_SIZE;
-  s << std::hex <<
-         "  memory@" << dmem_base << " {\n"
-         "    device_type = \"memory\";\n"
-         "    reg = <0x" << (dmem_base >> 32) << " 0x" << (dmem_base & (uint32_t)-1) <<
-                   " 0x" << (dmem_size >> 32) << " 0x" << (dmem_size & (uint32_t)-1) << ">;\n"
-         "  };\n";
-  // System
-  s <<   "  soc {\n"
-         "    #address-cells = <2>;\n"
-         "    #size-cells = <2>;\n"
-         "    compatible = \"ucbbar,spike-bare-soc\", \"simple-bus\";\n"
-         "    ranges;\n"
-         "    clint@" << CLINT_BASE << " {\n"
-         "      compatible = \"riscv,clint0\";\n"
-         "      interrupts-extended = <" << std::dec;
-  for (size_t i = 0; i < NUM_PROCS; i++)
-    s << "&CPU" << i << "_intc 3 &CPU" << i << "_intc 7 ";
-  uint64_t clint_base = CLINT_BASE;
-  uint64_t clint_size = CLINT_SIZE;
-  s << std::hex << ">;\n"
-         "      reg = <0x" << (clint_base >> 32) << " 0x" << (clint_base & (uint32_t)-1) <<
-                     " 0x" << (clint_size >> 32) << " 0x" << (clint_size & (uint32_t)-1) << ">;\n"
-         "    };\n"
-         "  };\n"
-      /*
-         "  htif {\n"
-         "    compatible = \"ucb,htif0\";\n"
-         "  };\n"
-      */
-         "  uart@" << UART_BASE << " {\n"
-         "    compatible = \"ns16550a\";\n"
-         "    reg = <0x0 0x" << UART_BASE << " 0x0 0x8>;\n"
-         "    reg-shift = <3>;\n"
-         "    clock-frequency = <" << std::dec << CPU_HZ << std::hex << ">;\n"
-         "  };\n"
-         "};\n";
+    std::stringstream s;
+    s << std::dec <<
+        "/dts-v1/;\n"
+        "\n"
+        "/ {\n"
+        "  #address-cells = <2>;\n"
+        "  #size-cells = <2>;\n"
+        "  compatible = \"ucbbar,spike-bare-dev\";\n"
+        "  model = \"ucbbar,spike-bare\";\n"
+        "  cpus {\n"
+        "    #address-cells = <1>;\n"
+        "    #size-cells = <0>;\n"
+        "    timebase-frequency = <" << CPU_HZ << ">;\n";
+    // For each processor
+    for (size_t i = 0; i < NUM_PROCS; i++) {
+        s << "    CPU" << i << ": cpu@" << i << " {\n"
+            "      device_type = \"cpu\";\n"
+            "      reg = <" << i << ">;\n"
+            "      status = \"okay\";\n"
+            "      compatible = \"riscv\";\n"
+            "      riscv,isa = \"rv" << xlen << isa_string << "\";\n"
+            "      mmu-type = \"riscv," << (xlen <= 32 ? "sv32" : "sv48") << "\";\n"
+            "      clock-frequency = <" << CPU_HZ << ">;\n"
+            "      CPU" << i << "_intc: interrupt-controller {\n"
+            "        #interrupt-cells = <1>;\n"
+            "        interrupt-controller;\n"
+            "        compatible = \"riscv,cpu-intc\";\n"
+            "      };\n"
+            "    };\n";
+    }
+    s <<   "  };\n";
+    // For each memory
+    uint64_t dmem_base = DMEM_BASE;
+    uint64_t dmem_size = DMEM_SIZE;
+    s << std::hex <<
+        "  memory@" << dmem_base << " {\n"
+        "    device_type = \"memory\";\n"
+        "    reg = <0x" << (dmem_base >> 32) << " 0x" << (dmem_base & (uint32_t)-1) <<
+        " 0x" << (dmem_size >> 32) << " 0x" << (dmem_size & (uint32_t)-1) << ">;\n"
+        "  };\n";
+    // System
+    s <<   "  soc {\n"
+        "    #address-cells = <2>;\n"
+        "    #size-cells = <2>;\n"
+        "    compatible = \"ucbbar,spike-bare-soc\", \"simple-bus\";\n"
+        "    ranges;\n"
+        "    clint@" << CLINT_BASE << " {\n"
+        "      compatible = \"riscv,clint0\";\n"
+        "      interrupts-extended = <" << std::dec;
+    for (size_t i = 0; i < NUM_PROCS; i++)
+        s << "&CPU" << i << "_intc 3 &CPU" << i << "_intc 7 ";
+    uint64_t clint_base = CLINT_BASE;
+    uint64_t clint_size = CLINT_SIZE;
+    s << std::hex << ">;\n"
+        "      reg = <0x" << (clint_base >> 32) << " 0x" << (clint_base & (uint32_t)-1) <<
+        " 0x" << (clint_size >> 32) << " 0x" << (clint_size & (uint32_t)-1) << ">;\n"
+        "    };\n"
+        "  };\n"
+        /*
+           "  htif {\n"
+           "    compatible = \"ucb,htif0\";\n"
+           "  };\n"
+         */
+        "  uart@" << UART_BASE << " {\n"
+        "    compatible = \"ns16550a\";\n"
+        "    reg = <0x0 0x" << UART_BASE << " 0x0 0x8>;\n"
+        "    reg-shift = <3>;\n"
+        "    clock-frequency = <" << std::dec << CPU_HZ << std::hex << ">;\n"
+        "  };\n"
+        "};\n";
 
-  dts = s.str();
-  std::string dtb = dts_compile(dts);
+    dts = s.str();
+    std::string dtb = dts_compile(dts);
 
-  //printf("%s\n\n", dts.c_str());
-  
-  rom.insert(rom.end(), dtb.begin(), dtb.end());
-  const int align = 0x1000;
-  rom.resize((rom.size() + align - 1) / align * align);
+    //printf("%s\n\n", dts.c_str());
 
-  // Print the contents
-  int bytes_per_word = 4;
-  printf ("@ 1000\n");
-  for (int i = 0; i < rom.size(); i += bytes_per_word) {
-      for (int j = bytes_per_word - 1; j >= 0; j--) {
-	  printf ("%02x", (unsigned char)(rom[i+j]));
-      }
-      printf ("\n");
-  }
-  if ((rom.size() % bytes_per_word) != 0)
-      printf ("WARNING: last bytes of ROM omitted (incomplete word)\n");
+    rom.insert(rom.end(), dtb.begin(), dtb.end());
+    const int align = 0x1000;
+    rom.resize((rom.size() + align - 1) / align * align);
+
+    // Print the contents
+    int bytes_per_word = 4;
+    printf ("@ 1000\n");
+    for (int i = 0; i < rom.size(); i += bytes_per_word) {
+        for (int j = bytes_per_word - 1; j >= 0; j--) {
+            printf ("%02x", (unsigned char)(rom[i+j]));
+        }
+        printf ("\n");
+    }
+    if ((rom.size() % bytes_per_word) != 0)
+        printf ("WARNING: last bytes of ROM omitted (incomplete word)\n");
 }
 
 void usage(char *progname) {
-    printf("usage: %s <xlen> <isa>\n", progname);
-    printf("example: %s 64 imafdcus\n", progname);
+    printf("usage: %s <xlen> <isa> <normal/secure>\n", progname);
+    printf("example: %s 64 imafdcus normal\n", progname);
 }
 
 int main(int argc, char *argv[]) {
     char *progname = argv[0];
 
-    if (argc != 3) {
-	usage(progname);
-	exit(1);
+    if (argc != 4) {
+        usage(progname);
+        exit(1);
     }
 
     int xlen;
     char *rv_str = argv[1];
-    if (strcmp(rv_str,"RV32") == 0) {
-	xlen = 32;
-    } else if (strcmp(rv_str,"RV64") == 0) {
-	xlen = 64;
+    if (strncmp(rv_str,"RV32",5) == 0) {
+        xlen = 32;
+    } else if (strncmp(rv_str,"RV64",5) == 0) {
+        xlen = 64;
     } else {
-	usage(progname);
-	exit(1);
+        usage(progname);
+        exit(1);
     }
 
-    char isa_string[250];
-    strcpy(isa_string, argv[2]);
-    isa_string[249] = '\0';
+    unsigned int isa_string_len = 250;
+    char isa_string[isa_string_len];
+    strncpy(isa_string, argv[2], isa_string_len);
+    isa_string[isa_string_len-1] = '\0';
 
-    make_dtb(xlen, isa_string);
+    bool secure;
+    char *sec_str = argv[3];
+    if (strncmp(sec_str,"normal",7) == 0) {
+        secure = false;
+    } else if (strncmp(sec_str,"secure",7) == 0) {
+        secure = true;
+    } else {
+        usage(progname);
+        exit(1);
+    }
+
+    make_dtb(xlen, isa_string, secure);
     exit(0);
 }
 
