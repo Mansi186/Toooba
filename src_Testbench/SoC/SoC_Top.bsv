@@ -151,7 +151,7 @@ module mkSoC_Top #(Reset dm_power_on_reset)
    Praesidio_CoreWW #(N_External_Interrupt_Sources)  corew <- mkPraesidioCoreWW (dm_power_on_reset, soc_map);
 
    // SoC Boot ROM
-   Boot_ROM_IFC  boot_rom <- mkBoot_ROM;
+   Boot_ROM_IFC  boot_rom <- mkBoot_ROM(False);
    // AXI4 Deburster in front of Boot_ROM
    AXI4_ManagerSubordinate_Shim#(Wd_SId, Wd_Addr, Wd_Data, 0, 0, 0, 0, 0)
       boot_rom_axi4_deburster <- mkBurstToNoBurst_ManagerSubordinate;
