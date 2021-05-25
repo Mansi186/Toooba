@@ -174,7 +174,7 @@ module mkSoC_Top #(Reset dm_power_on_reset)
    // SoC fabric manager connections
    // Note: see 'SoC_Map' for definitions
 
-   Vector#(2, AXI4_Manager #(TAdd#(Wd_MId,2), Wd_Addr, Wd_Data,
+   Vector#(2, AXI4_Manager #(TAdd#(Wd_MId,4), Wd_Addr, Wd_Data,
                                       0, 0, 0, 0, 0))
       manager_vector = newVector;
 
