@@ -135,7 +135,6 @@ interface CommitInput;
 `ifdef INCLUDE_TANDEM_VERIF
     interface Vector #(SupSize, Put #(Trace_Data2)) v_to_TV;
 `endif
-    method Bool inSecureWorld;
 endinterface
 
 typedef struct {
@@ -666,7 +665,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
         if (verbosity >= 1) begin
            $display ("instret:%0d  PC:0x%0h  instr:0x%08h", rg_serial_num, x.pc, x.orig_inst,
-                     "  iType:", fshow (x.iType), " secure:", fshow (inIfc.inSecureWorld), "    [doCommitTrap] %d", cur_cycle);
+                     "  iType:", fshow (x.iType), " secure:", fshow (csrf.rd(csrAddrMPRAESIDIO)), "    [doCommitTrap] %d", cur_cycle);
         end
         if (verbose) begin
            $display ("CommitStage.doCommitTrap_flush: deq_data:   ", fshow (x));
@@ -854,7 +853,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
         if(verbose) $display("[doCommitSystemInst] ", fshow(x));
         if (verbosity >= 1) begin
            $display("instret:%0d  PC:0x%0h  instr:0x%08h", rg_serial_num, x.pc, x.orig_inst,
-                    "   iType:", fshow (x.iType), " secure:", fshow (inIfc.inSecureWorld), "    [doCommitSystemInst] %d", cur_cycle);
+                    "   iType:", fshow (x.iType), " secure:", fshow (csrf.rd(csrAddrMPRAESIDIO)), "    [doCommitSystemInst] %d", cur_cycle);
         end
 
         // we claim a phy reg for every inst, so commit its renaming
@@ -1109,7 +1108,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
                     if (verbosity >= 1) begin
                        $display("instret:%0d  PC:0x%0h  instr:0x%08h", rg_serial_num + instret, x.pc, x.orig_inst,
-                                "   iType:", fshow (x.iType), " secure:", fshow (inIfc.inSecureWorld), "    [doCommitNormalInst [%0d]] %d", i, cur_cycle);
+                                "   iType:", fshow (x.iType), " secure:", fshow (csrf.rd(csrAddrMPRAESIDIO)), "    [doCommitNormalInst [%0d]] %d", i, cur_cycle);
                     end
 
 `ifdef INCLUDE_TANDEM_VERIF

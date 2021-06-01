@@ -152,6 +152,8 @@
 `CSR(TRNG,       12'hcc0) // random number for secure boot
 `endif
 
+`CSR(MPRAESIDIO, 12'hfc0)
+
 `CSR(TSELECT,     12'h7A0)    // Debug/trace tselect
 `CSR(TDATA1,      12'h7A1)    // Debug/trace tdata1
 `CSR(TDATA2,      12'h7A2)    // Debug/trace tdata2

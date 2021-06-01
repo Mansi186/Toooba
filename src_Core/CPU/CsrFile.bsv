@@ -385,7 +385,7 @@ module mkConfigEhr#(t init)(Ehr#(n, t)) provisos(Bits#(t, w));
     return ifc;
 endmodule
 
-module mkCsrFile #(Data hartid)(CsrFile);
+module mkCsrFile #(Data hartid, Bool secure_world)(CsrFile);
     RiscVISASubset isa = defaultValue;
 
     // To save from bypassing logic, CSR reads will get stale value
@@ -800,6 +800,8 @@ module mkCsrFile #(Data hartid)(CsrFile);
     Reg#(Data) trng_csr <- mkReadOnlyReg(0); //mkTRNG;
 `endif
 
+    Reg#(Bit#(1)) mpraesidio_csr <- mkReadOnlyReg(secure_world ? 1'b1 : 1'b0);
+
     //SCRs
     Reg#(CapReg) ddc_reg          <- mkCsrReg(defaultValue);
 
@@ -895,6 +897,7 @@ module mkCsrFile #(Data hartid)(CsrFile);
             csrAddrMSPEC:      mspec_csr;
             csrAddrTRNG:       trng_csr;
 `endif
+            csrAddrMPRAESIDIO: zeroExtendReg(mpraesidio_csr);
             csrAddrTSELECT:    rg_tselect;
             csrAddrTDATA1:     rg_tdata1;
             csrAddrTDATA2:     rg_tdata2;

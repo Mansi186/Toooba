@@ -296,7 +296,7 @@ module mkCore#(CoreId coreId, Bool secure_world)(Core);
     RFileSynth rf <- mkRFileSynth;
 
     // Bluespec: CsrFile including external interrupt request methods
-    CsrFile csrf <- mkCsrFile(zeroExtend(coreId)); // hartid in CSRF should be core id
+    CsrFile csrf <- mkCsrFile(zeroExtend(coreId), secure_world); // hartid in CSRF should be core id
 
     RegRenamingTable regRenamingTable <- mkRegRenamingTable;
     EpochManager epochManager <- mkEpochManager;
@@ -677,10 +677,6 @@ module mkCore#(CoreId coreId, Bool secure_world)(Core);
 `ifdef INCLUDE_TANDEM_VERIF
        interface v_to_TV = map (toPut, v_f_to_TV);
 `endif
-       method Bool inSecureWorld;
-          return secure_world;
-       endmethod
-
     endinterface);
     CommitStage commitStage <- mkCommitStage(commitInput);
 
