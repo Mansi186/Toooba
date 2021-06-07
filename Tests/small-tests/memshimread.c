@@ -2,11 +2,11 @@ int main(void) {
     int ret;
     //Loop that counts how long it takes for doing loads from DRAM 
     asm volatile (
-        "li t0, 10;"
+        "li t0, 200;"
         "auipc t2, 0x100;"
         "srli t2, t2, 2;"
         "slli t2, t2, 2;"
-        "addi t2, t2, 0x7FF;"
+        "addi t2, t2, 0x7F0;"
         "rdtime t1;"
         "loop: addi t0, t0, -1;"
         "slli t3, t0, 16;"
