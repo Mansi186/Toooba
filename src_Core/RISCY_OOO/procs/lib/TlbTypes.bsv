@@ -31,7 +31,8 @@ import ProcTypes::*;
 typedef struct{
     Addr  addr;
     Bool  write;
-    Bool  cap;
+    Bool  capStore;
+    Bool  potentialCapLoad;
 } TlbReq deriving(Eq, Bits, FShow);
 typedef Tuple3#(Addr, Maybe#(Exception), Bool) TlbResp;
 
@@ -70,11 +71,13 @@ typedef struct {
     Bool cap_writable;
     Bool cap_readable;
     Bool cap_dirty;
+    Bool cap_read_mod;
+    Bool cap_read_gen;
 } PTEUpperType deriving (Bits, Eq, FShow);
 
 typedef struct {
     PTEUpperType pteUpperType;
-    Bit#(7) reserved;
+    Bit#(5) reserved;
     Ppn ppn;
     Bit#(2) reserved_sw; // reserved for supervisor software
     PTEType pteType;
@@ -188,7 +191,8 @@ function TlbPermissionCheck hasVMPermission(
     VMInfo vm_info,
     PTEType pte_type, PTEUpperType pte_upper_type,
      Ppn ppn, PageWalkLevel level,
-    TlbAccessType access, Bool cap
+    TlbAccessType access,
+    Bool capStore, Bool potentialCapLoad
 );
     // try to find any page fault
     Bool fault = False;
@@ -204,6 +208,11 @@ function TlbPermissionCheck hasVMPermission(
     end
     if(!isPpnAligned(ppn, level)) begin
         fault = True; // unaligned super page
+    end
+    if ((!pte_upper_type.cap_readable && pte_upper_type.cap_read_gen) ||
+        (pte_upper_type.cap_readable && !pte_upper_type.cap_read_mod &&
+        pte_upper_type.cap_read_gen)) begin
+        fault = True;
     end
 
     // check permission related to user page
@@ -240,6 +249,19 @@ function TlbPermissionCheck hasVMPermission(
                 !(pte_type.executable && vm_info.exeReadable)) begin
                 fault = True;
             end
+            if (potentialCapLoad) begin
+                if (!fault) excCode = excLoadCapPageFault;
+                // load traps if page not cap readable and using cap_read_mod set
+                if (!pte_upper_type.cap_readable && pte_upper_type.cap_read_mod) begin
+                    fault = True;
+                end
+                // perform generation check
+                if (pte_upper_type.cap_read_mod
+                    && ((pte_type.user ? vm_info.globalCapLoadGenU : vm_info.globalCapLoadGenS)
+                       != pack(pte_upper_type.cap_read_gen))) begin
+                    fault = True;
+                end
+            end
         end
         DataStore: begin
             excCode = excStorePageFault;
@@ -247,7 +269,7 @@ function TlbPermissionCheck hasVMPermission(
             if(!(pte_type.readable && pte_type.writable)) begin
                 fault = True;
             end
-            else if(cap && !pte_upper_type.cap_writable) begin
+            else if(capStore && !pte_upper_type.cap_writable) begin
                 if (!fault) excCode = excStoreCapPageFault;
                 fault = True;
             end
@@ -261,7 +283,7 @@ function TlbPermissionCheck hasVMPermission(
 
     if (!fault) begin
         // check if accessed or dirty bit needs to be set
-        if(cap && access == DataStore && !pte_upper_type.cap_dirty) begin
+        if(capStore && access == DataStore && !pte_upper_type.cap_dirty) begin
             ret.allowed = False;
             ret.excCode = excStoreCapPageFault;
         end

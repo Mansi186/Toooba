@@ -268,7 +268,7 @@ typedef enum {
     Alu,
     Ld, St, Lr, Sc,
     J, Jr, Br,
-    CCall, CJALR, Cap,
+    CCall, CJAL, CJALR, Cap,
     Auipc,
     Auipcc,
     Fpu,
@@ -513,6 +513,8 @@ typedef struct {
                             // mstatus.mprv), accessing page with U=1 will NOT
                             // fault
     Bit#(44) basePPN; // ppn of root page table
+    Bit#(1) globalCapLoadGenU;
+    Bit#(1) globalCapLoadGenS;
 `ifdef SECURITY
     // sanctum page walk check
     Bit#(64) sanctum_evbase;
@@ -538,7 +540,9 @@ instance DefaultValue#(VMInfo);
         sv39: False,
         exeReadable: False,
         userAccessibleByS: False,
-        basePPN: 0
+        basePPN: 0,
+        globalCapLoadGenU: 0,
+        globalCapLoadGenS: 0
 `ifdef SECURITY
         , sanctum_evbase:   maxBound,
         sanctum_evmask:     0,
@@ -1116,6 +1120,11 @@ typedef struct {
    HpmRpt evt_MEM_CAP_STORE_TAG_SET;
 } EventsCoreMem deriving (Bits, FShow); // Memory needs more space for reporting delays
 typedef TDiv#(SizeOf#(EventsCoreMem),Report_Width) EventsCoreMemElements;
+
+typedef struct {
+   SupCnt evt_RENAMED_INST;
+} EventsTransExe deriving (Bits, FShow);
+typedef TDiv#(SizeOf#(EventsTransExe),SizeOf#(SupCnt)) EventsTransExeElements;
 `endif
 
 function Bit#(outWidth) hash(Bit#(inWidth) in)

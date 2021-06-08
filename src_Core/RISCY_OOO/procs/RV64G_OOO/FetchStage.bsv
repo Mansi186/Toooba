@@ -487,13 +487,11 @@ module mkFetchStage(FetchStage);
         // Access main mem or boot rom if no TLB exception
         Bool access_mmio = False;
 `ifdef RVFI_DII
-        if (!isValid(cause)) begin
-            // We 32-bit align PC (and increment nbSupX2 accordingly) in
-            // doFetch1 for the real MMIO and ICache require 32-bit, so make
-            // DII look like that by decrementing pid if PC is "odd"; this
-            // extra parcel on the front will be discarded by fav_parse_insts.
-            dii.fromDii.request.put(in.dii_pid);
-        end
+        // We 32-bit align PC (and increment nbSupX2 accordingly) in
+        // doFetch1 for the real MMIO and ICache require 32-bit, so make
+        // DII look like that by decrementing pid if PC is "odd"; this
+        // extra parcel on the front will be discarded by fav_parse_insts.
+        dii.fromDii.request.put(in.dii_pid);
 `else
         if (!isValid(cause)) begin
             case(mmio.getFetchTarget(phys_pc))
@@ -561,10 +559,10 @@ module mkFetchStage(FetchStage);
         // valid.
         Vector#(SupSizeX2,Maybe#(Instruction16)) inst_d = replicate(tagged Valid (0));
         f22f3.deq();
-        if (!isValid(fetch3In.cause)) begin
 `ifdef RVFI_DII
-           inst_d <- dii.fromDii.response.get;
+        inst_d <- dii.fromDii.response.get;
 `else
+        if (!isValid(fetch3In.cause)) begin
            if(fetch3In.access_mmio) begin
               inst_d <- mmio.bootRomResp;
               if(verbose) $display("get answer from MMIO 0x%0x", getAddr(decompressPc(fetch3In.pc)), " ", fshow(inst_d));
@@ -572,9 +570,9 @@ module mkFetchStage(FetchStage);
            else begin
               if(verbose) $display("get answer from memory 0x%0x", getAddr(decompressPc(fetch3In.pc)));
                  inst_d <- mem_server.response.get;
-              end
-`endif
+           end
         end
+`endif
 
         for (Integer i = 0; i < valueOf(SupSizeX2) && fromInteger(i) <= fetch3In.inst_frags_fetched; i = i + 1) begin
            PcCompressed pc = fetch3In.pc;
@@ -628,7 +626,7 @@ module mkFetchStage(FetchStage);
                end
             end else if (is_16b_inst(frag.inst_frag)) begin // 16-bit instruction
                new_pick = tagged Valid fetch3_2_instC(frag,
-                                                      fv_decode_C (misa, misa_mxl_64, frag.inst_frag),
+                                                      fv_decode_C (misa, misa_mxl_64, getFlags(decompressPc(frag.pc))==1, frag.inst_frag),
                                                       zeroExtend(frag.inst_frag));
             end
          end
@@ -719,7 +717,7 @@ module mkFetchStage(FetchStage);
                   CapMem push_addr = addPc(pc, ((in.inst_kind == Inst_32b) ? 4 : 2));
 
                   CapMem pop_addr = ras.ras[i].first;
-                  if (dInst.iType == J && dst_link) begin
+                  if ((dInst.iType == J || dInst.iType == CJAL) && dst_link) begin
                      // rs1 is invalid, i.e., not link: push
                      ras.ras[i].popPush(False, Valid (push_addr));
                   end
@@ -823,7 +821,7 @@ module mkFetchStage(FetchStage);
       if(redirectInst matches tagged Valid .iType &&& doStats) begin
          case(iType)
             Br: decRedirectBrCnt.incr(1);
-            J : decRedirectJmpCnt.incr(1);
+            J, CJAL: decRedirectJmpCnt.incr(1);
             Jr: decRedirectJrCnt.incr(1);
             default: decRedirectOtherCnt.incr(1);
          endcase
@@ -932,7 +930,7 @@ module mkFetchStage(FetchStage);
         CapMem pc, CapMem next_pc, IType iType, Bool taken,
         DirPredTrainInfo dpTrain, Bool mispred, Bool isCompressed
     );
-        //if (iType == J || (iType == Br && next_pc < pc)) begin
+        //if (iType == J || iType == CJAL || (iType == Br && next_pc < pc)) begin
         //    // Only train the next address predictor for jumps and backward branches
         //    // next_pc != pc + 4 is a substitute for taken
         //    nextAddrPred.update(pc, next_pc, taken);

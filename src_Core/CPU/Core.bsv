@@ -207,7 +207,7 @@ interface Core;
 
 `ifdef PERFORMANCE_MONITORING
     method Action events_llc(EventsCache events);
-    method Action events_tgc(EventsCache events);
+    method Action events_tgc(Vector#(7, Bit#(1)) events);
 `endif
 endinterface
 
@@ -236,6 +236,10 @@ instance BitVectorable #(EventsCore, SizeOf#(SupCnt), EventsCoreElements) provis
 endinstance
 instance BitVectorable #(EventsCoreMem, SizeOf#(HpmRpt), EventsCoreMemElements) provisos (Bits #(EventsCoreMem, m));
    function Vector#(EventsCoreMemElements, HpmRpt) to_vector(EventsCoreMem e) =
+      reverse(unpack(pack(e)));
+endinstance
+instance BitVectorable #(EventsTransExe, SizeOf#(SupCnt), EventsTransExeElements) provisos (Bits #(EventsTransExe, m));
+   function Vector#(EventsTransExeElements, SupCnt) to_vector(EventsTransExe e) =
       reverse(unpack(pack(e)));
 endinstance
 instance BitVectorable #(EventsCache, SizeOf#(HpmRpt), EventsCacheElements) provisos (Bits #(EventsCache, m));
@@ -1098,7 +1102,7 @@ module mkCore#(CoreId coreId)(Core);
      // different fields than the TLB, which makes it safe to combine them
 
      Reg#(EventsCache) events_llc_reg <- mkRegU;
-     Reg#(EventsCache) events_tgc_reg <- mkRegU;
+     Reg#(Vector#(7, Bit#(1))) events_tgc_reg <- mkRegU;
      rule report_events;
          EventsCore events = unpack(pack(commitStage.events));
          events.evt_REDIRECT = zeroExtend(pack(fetchStage.redirect_evt));
@@ -1113,17 +1117,17 @@ module mkCore#(CoreId coreId)(Core);
      Vector #(16, Bit #(Report_Width)) imem_evts_vec = to_large_vector (instMem);
      EventsCache dataMem = unpack(pack(dMem.events) | pack(dTlb.events));
      Vector #(16, Bit #(Report_Width)) dmem_evts_vec = to_large_vector (dataMem);
-     Vector #(32, Bit #(Report_Width)) external_evts_vec = replicate (0);//to_large_vector (w_external_evts);
+     Vector #(32, Bit #(Report_Width)) tgc_evts_vec = to_large_vector (events_tgc_reg);
      EventsCache llMem = unpack(pack(events_llc_reg) | pack(l2Tlb.events));
      Vector #(16, Bit #(Report_Width)) llc_evts_vec = to_large_vector (llMem);
-     Vector #(16, Bit #(Report_Width)) tgc_evts_vec = to_large_vector (events_tgc_reg);
+     Vector #(16, Bit #(Report_Width)) trans_exe_evts_vec = to_large_vector (renameStage.events);
 
      let events = append (null_evt, core_evts_vec);
      events = append (events, imem_evts_vec);
      events = append (events, dmem_evts_vec);
-     events = append (events, external_evts_vec);
-     events = append (events, llc_evts_vec);
      events = append (events, tgc_evts_vec);
+     events = append (events, llc_evts_vec);
+     events = append (events, trans_exe_evts_vec);
 
      (* fire_when_enabled, no_implicit_conditions *)
      rule rl_send_perf_evts;

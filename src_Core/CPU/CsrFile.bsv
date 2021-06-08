@@ -245,7 +245,7 @@ endfunction
 interface PerfCountersVec;
     interface Vector#(No_Of_Ctrs, Reg#(Data)) counter_vec;
     interface Vector#(No_Of_Ctrs, Reg#(Data)) event_vec;
-    interface Reg#(Data) inhibit;
+    interface Reg#(Bit#(No_Of_Ctrs)) inhibit;
     method Action send_performance_events (Vector #(No_Of_Evts, Bit#(Report_Width)) evts);
 endinterface
 (* synthesize *)
@@ -283,8 +283,8 @@ module mkPerfCountersToooba (PerfCountersVec);
     interface counter_vec = counters;
     interface event_vec = events;
     interface inhibit = interface Reg;
-        method Action _write(Data x) = writeCounterInhibitFF.enq(truncate(x));
-        method Data _read = zeroExtend(perf_counters.read_ctr_inhibit);
+        method Action _write(Bit#(No_Of_Ctrs) x) = writeCounterInhibitFF.enq(x);
+        method Bit#(No_Of_Ctrs) _read = (perf_counters.read_ctr_inhibit);
     endinterface;
     method send_performance_events = perf_counters.send_performance_events;
 endmodule
@@ -531,6 +531,8 @@ module mkCsrFile #(Data hartid)(CsrFile);
 
     // mtval (mbadaddr in spike)
     Reg#(Data) mtval_csr <- mkCsrReg(0);
+    // Capability cause register
+    Reg#(Data) mccsr_csr <- mkReadOnlyReg(64'b11);
     // mip
     Vector#(4, Reg#(Bit#(1))) external_int_pend_vec = replicate(readOnlyReg(0));
     external_int_pend_vec[prvU] <- mkCsrReg(0);
@@ -641,6 +643,10 @@ module mkCsrFile #(Data hartid)(CsrFile);
 
     // stval (sbadaddr in spike)
     Reg#(Data) stval_csr <- mkCsrReg(0);
+    // Capability cause register
+    Reg#(Bit#(1)) global_cap_load_gen_s_reg <- mkCsrReg(0);
+    Reg#(Bit#(1)) global_cap_load_gen_u_reg <- mkCsrReg(0);
+    Reg#(Data) sccsr_csr = concatReg4 (readOnlyReg(60'b0), global_cap_load_gen_u_reg, global_cap_load_gen_s_reg, readOnlyReg(2'b11));
     // sip: restricted view of mip
     Reg#(Data) sip_csr = concatReg9(
         readOnlyReg(54'b0),
@@ -711,8 +717,6 @@ module mkCsrFile #(Data hartid)(CsrFile);
    Reg #(Data) rg_tdata1  = concatReg3 (rg_tdata1_type, rg_tdata1_dmode, rg_tdata1_data);
    Reg #(Data) rg_tdata2  <- mkConfigRegU;
    Reg #(Data) rg_tdata3  <- mkConfigRegU;
-   // Capability cause register
-   Reg #(CapException) mccsr_reg <- mkCsrReg(unpack(0));
 
 `ifdef INCLUDE_GDB_CONTROL
    // DCSR is 32b even in RV64
@@ -817,8 +821,19 @@ module mkCsrFile #(Data hartid)(CsrFile);
     Reg#(CapReg) mScratchC_reg <- mkCsrReg(nullCap);
     Ehr#(2, CapReg) mepcc_reg  <- mkConfigEhr(defaultValue);
 
+`ifdef PERFORMANCE_MONITORING
+    // Performance monitoring
+    Reg#(Bit#(1)) mcountinhibit_cy_reg <- mkCsrReg(0);
+    Reg#(Bit#(1)) mcountinhibit_ir_reg <- mkCsrReg(0);
+    Reg#(Data) mcountinhibit_reg = concatReg5(readOnlyReg(32'h00000000), perf_counters.inhibit, mcountinhibit_ir_reg, readOnlyReg(1'b0), mcountinhibit_cy_reg);
+`endif
+
     rule incCycle;
+`ifdef PERFORMANCE_MONITORING
+        if(!unpack(mcountinhibit_cy_reg)) mcycle_ehr[1] <= mcycle_ehr[1] + 1;
+`else
         mcycle_ehr[1] <= mcycle_ehr[1] + 1;
+`endif
     endrule
 
     // Function for getting a csr given an index
@@ -854,6 +869,7 @@ module mkCsrFile #(Data hartid)(CsrFile);
             csrAddrSTVAL:      stval_csr;
             csrAddrSIP:        sip_csr;
             csrAddrSATP:       satp_csr;
+            csrAddrSCCSR:      sccsr_csr;
             // Machine CSRs
             csrAddrMSTATUS:    mstatus_csr;
             csrAddrMISA:       misa_csr;
@@ -873,9 +889,10 @@ module mkCsrFile #(Data hartid)(CsrFile);
             csrAddrMARCHID:    marchid_csr;
             csrAddrMIMPID:     mimpid_csr;
             csrAddrMHARTID:    mhartid_csr;
-            csrAddrMCCSR:      csr_capcause(mccsr_reg);
+            csrAddrMCCSR:      mccsr_csr;
 `ifdef PERFORMANCE_MONITORING
-            csrAddrMCOUNTERINHIBIT: perf_counters.inhibit;
+            //csrAddrMCOUNTERINHIBIT: perf_counters.inhibit;
+            csrAddrMCOUNTERINHIBIT: mcountinhibit_reg;
 `endif
 `ifdef SECURITY
             csrAddrMEVBASE:    mevbase_csr;
@@ -1118,7 +1135,8 @@ module mkCsrFile #(Data hartid)(CsrFile);
                     excInstAccessFault, excInstPageFault,
                     excLoadAddrMisaligned, excLoadAccessFault,
                     excStoreAddrMisaligned, excStoreAccessFault,
-                    excLoadPageFault, excStorePageFault: return addr;
+                    excLoadPageFault, excStorePageFault,
+                    excLoadCapPageFault, excStoreCapPageFault: return addr;
 
                     default: return 0;
                 endcase);
@@ -1286,7 +1304,9 @@ module mkCsrFile #(Data hartid)(CsrFile);
             sv39: prv < prvM && vm_mode_sv39_reg == 1,
             exeReadable: mxr_reg == 1,
             userAccessibleByS: sum_reg == 1,
-            basePPN: ppn_reg
+            basePPN: ppn_reg,
+            globalCapLoadGenU: global_cap_load_gen_u_reg,
+            globalCapLoadGenS: global_cap_load_gen_s_reg
 `ifdef SECURITY
             , sanctum_evbase:   mevbase_csr,
             sanctum_evmask:     mevmask_csr,
@@ -1313,7 +1333,9 @@ module mkCsrFile #(Data hartid)(CsrFile);
             sv39: prv < prvM && vm_mode_sv39_reg == 1,
             exeReadable: mxr_reg == 1,
             userAccessibleByS: sum_reg == 1,
-            basePPN: ppn_reg
+            basePPN: ppn_reg,
+            globalCapLoadGenU: global_cap_load_gen_u_reg,
+            globalCapLoadGenS: global_cap_load_gen_s_reg
 `ifdef SECURITY
             , sanctum_evbase:   mevbase_csr,
             sanctum_evmask:     mevmask_csr,
@@ -1351,7 +1373,11 @@ module mkCsrFile #(Data hartid)(CsrFile);
     };
 
     method Action incInstret(SupCnt x);
+`ifdef PERFORMANCE_MONITORING
+        if(!unpack(mcountinhibit_ir_reg))  minstret_ehr[1] <= minstret_ehr[1] + zeroExtend(x);
+`else
         minstret_ehr[1] <= minstret_ehr[1] + zeroExtend(x);
+`endif
     endmethod
 
     method Action setTime(Data t);
