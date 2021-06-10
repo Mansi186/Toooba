@@ -56,7 +56,7 @@ RISCY_DIRS = $(RISCY_HOME)/procs/RV64G_OOO:$(RISCY_HOME)/procs/lib:$(RISCY_HOME)
 
 CONNECTAL_DIRS = $(RISCY_HOME)/connectal/bsv:$(RISCY_HOME)/connectal/tests/spi:$(RISCY_HOME)/connectal/lib/bsv
 
-BLUESTUFF_DIRS = $(REPO)/src_Core/BSV_Additional_Libs/BlueStuff:$(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/BlueUtils:$(REPO)/src_Core
+BLUESTUFF_DIRS = $(REPO)/src_Core/BSV_Additional_Libs/BlueStuff:$(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/BlueUtils:$(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/BlueBasics
 
 # ALL_RISCY_DIRS = $(RISCY_DIRS)
 ALL_RISCY_DIRS = $(RISCY_DIRS):$(CONNECTAL_DIRS):$(BLUESTUFF_DIRS)
@@ -103,8 +103,11 @@ Verilog_RTL:
 Verilog_RTL_sim:
 	mkdir -p $@
 
+$(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/.git:
+	git submodule update --init --recursive
+
 .PHONY: compile_synth
-compile_synth:  build_dir_synth Verilog_RTL
+compile_synth:  build_dir_synth Verilog_RTL $(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/.git
 	@echo  "INFO: Generating RTL into Verilog_RTL for synthesis ..."
 	bsc -u -elab -verilog  -vdir Verilog_RTL $(BUILD_DIRS_SYNTH)  $(BSC_COMPILATION_FLAGS)  $(SYNTH_BSC_OPTIONS) $(BSC_PATH)  $(TOPFILE)
 	@echo  "INFO: Generated Synth RTL into Verilog_RTL"
@@ -112,7 +115,7 @@ compile_synth:  build_dir_synth Verilog_RTL
 	@echo  "INFO: Copied RTL from  Verilog_RTL/  to  xilinx_ip/hdl/"
 
 .PHONY: compile_sim
-compile_sim:  build_dir_sim Verilog_RTL_sim
+compile_sim:  build_dir_sim Verilog_RTL_sim $(REPO)/src_Core/BSV_Additional_Libs/BlueStuff/.git
 	@echo  "INFO: Generating RTL into Verilog_RTL_sim for simulation ..."
 	bsc -u -elab -verilog  -vdir Verilog_RTL_sim $(BUILD_DIRS_SIM)  $(BSC_COMPILATION_FLAGS) $(SIM_BSC_OPTIONS) $(BSC_PATH)  $(TOPFILE)
 
