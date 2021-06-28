@@ -46,6 +46,7 @@ import FIFO::*;
 import Types::*;
 import ProcTypes::*;
 import DReg::*;
+import Ehr::*;
 import CCTypes::*;
 import SynthParam::*;
 import Performance::*;
@@ -196,14 +197,15 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
    // Is set to Valid intrDebugStep on dcsr[stepbit]==1 and one instruction has been processed.
    //     Note (step): 1st instruction is guaranteed architectural, cannot possibly be speculative.
    //     Note (step): 1st instruction may trap; we halt pointing at the trap vector
-   Reg #(Maybe #(Interrupt)) rg_m_halt_req <- mkReg (tagged Invalid);
+   Ehr #(3, Maybe #(Interrupt)) rg_m_halt_req_reg <- mkEhr (tagged Invalid);
+   Maybe #(Interrupt) rg_m_halt_req = rg_m_halt_req_reg[0];
 
    function Action fa_step_check;
       action
          if (csrf.dcsr_step_bit == 1'b1) begin
-            rg_m_halt_req <= tagged Valid intrDebugStep;
+            rg_m_halt_req_reg[0] <= tagged Valid intrDebugStep;
             if (verbosity >= 2)
-               $display ("%0d: %m.renameStage.fa_step_check: rg_m_halt_req <= tagged Valid intrDebugStep", cur_cycle);
+               $display ("%0d: %m.renameStage.fa_step_check: rg_m_halt_req_reg[0] <= tagged Valid intrDebugStep", cur_cycle);
          end
       endaction
    endfunction
@@ -324,6 +326,8 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
     );
         fetchStage.pipelines[0].deq;
 `ifdef INCLUDE_GDB_CONTROL
+        fa_step_check;
+
        if (verbosity >= 1) begin
           if (firstTrap == tagged Valid (tagged Interrupt intrDebugHalt))
              $display ("%0d: %m.renameStage.doRenaming_Trap: intrDebugHalt", cur_cycle);
@@ -1159,7 +1163,7 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
 
 `ifdef INCLUDE_GDB_CONTROL
         if (debug_step)
-           rg_m_halt_req <= tagged Valid intrDebugStep;
+           rg_m_halt_req_reg[0] <= tagged Valid intrDebugStep;
 `endif
 
         // only fire this rule if we make some progress
@@ -1214,13 +1218,13 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
 
 `ifdef INCLUDE_GDB_CONTROL
    method Action debug_halt_req () if (rg_m_halt_req == tagged Invalid);
-      rg_m_halt_req <= tagged Valid intrDebugHalt;
+      rg_m_halt_req_reg[1] <= tagged Valid intrDebugHalt;
       if (verbosity >= 1)
          $display ("%0d: %m.renameStage.renameStage.debug_halt_req", cur_cycle);
    endmethod
 
    method Action debug_resume;
-      rg_m_halt_req <= tagged Invalid;
+      rg_m_halt_req_reg[2] <= tagged Invalid;
       if (verbosity >= 1)
          $display ("%0d: %m.renameStage.renameStage.debug_resume", cur_cycle);
    endmethod
