@@ -634,9 +634,6 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
     // pipelined, then we need to check spec bits at commit port.
 
     rule doCommitTrap_flush(
-`ifdef INCLUDE_GDB_CONTROL
-        (rg_run_state == RUN_STATE_RUNNING) &&&
-`endif
         !isValid(commitTrap) &&&
         rob.deqPort[0].deq_data.trap matches tagged Valid .trap
     );
@@ -706,9 +703,6 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
     rule doCommitTrap_handle(
        commitTrap matches tagged Valid .trap
-`ifdef INCLUDE_GDB_CONTROL
-       &&& (rg_run_state == RUN_STATE_RUNNING)
-`endif
        &&& (! send_mip_csr_change_to_tv));
 
         // reset commitTrap
@@ -796,9 +790,6 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
     // commit misspeculated load
     rule doCommitKilledLd(
-`ifdef INCLUDE_GDB_CONTROL
-       (rg_run_state == RUN_STATE_RUNNING) &&&
-`endif
         !isValid(commitTrap) &&&
         !isValid(rob.deqPort[0].deq_data.trap) &&&
         rob.deqPort[0].deq_data.ldKilled matches tagged Valid .killBy
@@ -837,9 +828,6 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
     // commit system inst
     rule doCommitSystemInst(
-`ifdef INCLUDE_GDB_CONTROL
-       (rg_run_state == RUN_STATE_RUNNING) &&
-`endif
         !isValid(commitTrap) &&
         !isValid(rob.deqPort[0].deq_data.trap) &&
         !isValid(rob.deqPort[0].deq_data.ldKilled) &&
@@ -1033,9 +1021,6 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
     // commit normal: fire when at least one commit can be done
     rule doCommitNormalInst(
-`ifdef INCLUDE_GDB_CONTROL
-       (rg_run_state == RUN_STATE_RUNNING) &&
-`endif
         !isValid(commitTrap) &&
         !isValid(rob.deqPort[0].deq_data.trap) &&
         !isValid(rob.deqPort[0].deq_data.ldKilled) &&
