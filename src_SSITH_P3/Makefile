@@ -41,7 +41,7 @@ BSC_COMPILATION_FLAGS += \
 	-D TSO_MM \
 	-D INCLUDE_GDB_CONTROL \
 	-D BRVF_TRACE \
-	-D XILINX_BSCAN  -D USE_XILINX_FPU -D JTAG_TAP
+	-D XILINX_BSCAN -D JTAG_TAP
 
 # Synth only BSC_COMPILATION_FLAGS
 SYNTH_BSC_OPTIONS = -D XILINX_XCVU9P
@@ -74,7 +74,8 @@ ALL_RISCY_DIRS = $(RISCY_DIRS):$(CONNECTAL_DIRS):$(CHERI_DIRS)
 # ================================================================
 # Search path for bsc for .bsv files
 
-CONTRIB_DIRS = %/Libraries/Bus
+CONTRIB_DIRS = %/Libraries/Bus:%/Libraries/NonPipelinedMath
+
 CORE_DIRS = $(REPO)/src_Core/CPU:$(REPO)/src_Core/ISA:$(REPO)/src_Core/Core:$(REPO)/src_Core/PLIC:$(REPO)/src_Core/Debug_Module:$(REPO)/src_Core/BSV_Additional_Libs
 
 BLUESTUFF_DIRS = $(REPO)/libs/BlueStuff:$(REPO)/libs/BlueStuff/AXI:$(REPO)/libs/BlueStuff/BlueUtils:$(REPO)/libs/BlueStuff/BlueBasics
