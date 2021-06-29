@@ -44,6 +44,7 @@ import GetPut::*;
 import Cntrs::*;
 import ConfigReg::*;
 import DReg::*;
+import Ehr::*;
 import FIFO::*;
 import FIFOF::*;
 import Types::*;
@@ -272,7 +273,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 `endif
 
 `ifdef INCLUDE_GDB_CONTROL
-   Reg #(Run_State) rg_run_state   <- mkReg (RUN_STATE_RUNNING);
+   Ehr #(2, Run_State) rg_run_state   <- mkEhr (RUN_STATE_RUNNING);
 `endif
 
 `ifdef INCLUDE_TANDEM_VERIF
@@ -749,7 +750,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
              inIfc.setFetchWaitFlush;
 
              // Go to quiescent state until debugger resumes execution
-             rg_run_state <= RUN_STATE_DEBUGGER_HALTED;
+             rg_run_state[0] <= RUN_STATE_DEBUGGER_HALTED;
 
              if (verbosity >= 2)
                 $display ("%0d: %m.commitStage.doCommitTrap_handle; debugger halt:", cur_cycle);
@@ -1319,11 +1320,11 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
 
 `ifdef INCLUDE_GDB_CONTROL
    method Bool is_debug_halted;
-      return (rg_run_state == RUN_STATE_DEBUGGER_HALTED);
+      return (rg_run_state[0] == RUN_STATE_DEBUGGER_HALTED);
    endmethod
 
-   method Action debug_resume () if (rg_run_state == RUN_STATE_DEBUGGER_HALTED);
-      rg_run_state <= RUN_STATE_RUNNING;
+   method Action debug_resume () if (rg_run_state[0] == RUN_STATE_DEBUGGER_HALTED);
+      rg_run_state[1] <= RUN_STATE_RUNNING;
       if (verbosity >= 2)
          $display ("%0d: %m.commitStage.debug_resume", cur_cycle);
    endmethod
