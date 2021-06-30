@@ -96,7 +96,7 @@ module mkDoubleDiv(Server#(Tuple3#(Double, Double, FpuRoundMode), Tuple2#(Double
 `ifdef USE_XILINX_FPU
     let fpu <- mkXilinxFpDiv;
 `else
-    let int_div <- mkNonPipelinedDivider(2); // [sizhuo] size in RVFpu: 2
+    let int_div <- mkNonPipelinedDivider(8); // [sizhuo] size in RVFpu: 2
     let fpu <- mkFloatingPointDivider(int_div);
 `endif
     return fpu;
@@ -107,7 +107,7 @@ module mkDoubleSqrt(Server#(Tuple2#(Double, FpuRoundMode), Tuple2#(Double, FpuEx
 `ifdef USE_XILINX_FPU
     let fpu <- mkXilinxFpSqrt;
 `else
-    let int_sqrt <- mkNonPipelinedSquareRooter(2); // [sizhuo] size in RVFpu: 3
+    let int_sqrt <- mkNonPipelinedSquareRooter(8); // [sizhuo] size in RVFpu: 3
     let fpu <- mkFloatingPointSquareRooter(int_sqrt);
 `endif
     return fpu;
