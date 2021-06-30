@@ -476,7 +476,7 @@ module mkDTlb#(
                 // TLB hit
                 let entry = trans_result.entry;
                 // check permission
-            $display("procReq: vm_info: ", fshow(vm_info),
+            if(verbose) $display("procReq: vm_info: ", fshow(vm_info),
                      "         en     : ", fshow(entry),
                      "         r      : ", fshow(r)
                      );
@@ -488,7 +488,7 @@ module mkDTlb#(
                                                 r.write ? DataStore : DataLoad,
                                                 r.capStore,
                                                 r.potentialCapLoad);
-                $display("Permission check output 2: ", fshow(permCheck));
+                if(verbose) $display("Permission check output 2: ", fshow(permCheck));
                 if (permCheck.allowed) begin
                     // update TLB replacement info
                     tlb.updateRepByHit(trans_result.index);

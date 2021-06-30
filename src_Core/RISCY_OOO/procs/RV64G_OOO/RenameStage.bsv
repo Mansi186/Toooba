@@ -719,8 +719,6 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
                 doAssert(!isValid(dInst.csr), "Mem never explicitly read/write CSR");
                 doAssert((dInst.iType != Fence) == isValid(dInst.imm),
                          "Mem (non-Fence) needs imm for virtual addr");
-                Bit#(16) dum = hash(getAddr(pc));
-                $display("pc : %x , hash(pc) : %x", pc, dum);
                 // put in ldstq
                 if(isLdQ) begin
                     lsq.enqLd(inst_tag, mem_inst, allow_cap, phy_regs.dst, spec_bits, hash(getAddr(pc)));
