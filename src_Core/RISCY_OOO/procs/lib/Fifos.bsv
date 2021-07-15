@@ -82,7 +82,7 @@ interface SupFifo#(numeric type k, numeric type n, type t);
     interface Vector#(k, SupFifoEnq#(t)) enqS;
     interface Vector#(k, SupFifoDeq#(t)) deqS;
     method Bool internalEmpty; // for security
-    method Action clear;
+    method Action clear;  //added clear
 endinterface
 
 function Integer getMaxIndex( FifoState#(n) s );
