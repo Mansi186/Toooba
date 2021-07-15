@@ -82,6 +82,7 @@ interface SupFifo#(numeric type k, numeric type n, type t);
     interface Vector#(k, SupFifoEnq#(t)) enqS;
     interface Vector#(k, SupFifoDeq#(t)) deqS;
     method Bool internalEmpty; // for security
+    method Action clear;
 endinterface
 
 function Integer getMaxIndex( FifoState#(n) s );
@@ -137,28 +138,6 @@ instance ToPut#(Fifo#(n, t), t);
   endfunction
 endinstance
 
-// instance ToGet#(SupFifo#(k,n, t), t);
-//   function Get#(Vector#(k,Maybe#(t))) toGet(SupFifo#(k,n, t) f);
-//     return (interface Get;
-//       method ActionValue#(Vector#(k,Maybe#(t)) get;
-// //
-//         f.deq;
-//         return f.first;
-//       endmethod
-//     endinterface);
-//   endfunction
-// endinstance
-
-// instance ToPut#(SupFifo#(k,n, t), t);
-//   function Put#(Vector#(k,Maybe#(t))) toPut(SupFifo#(k,n, t) f);
-//     return (interface Put;
-//       method Action put(Vector#(k,Maybe#(t)) r);
-//
-//       f.enq(r);
-//       endmethod
-//     endinterface);
-//   endfunction
-// endinstance
 
 module mkUGSupFifo(SupFifo#(k,n,t)) provisos (
     Bits#(t,tSz),
@@ -171,6 +150,7 @@ module mkUGSupFifo(SupFifo#(k,n,t)) provisos (
     Ehr#(TAdd#(1,k), Bit#(TLog#(k))) dequeueFifo <- mkEhr(unpack(0));
     Vector#(k, Ehr#(2,Maybe#(t))) enqueueElement <- replicateM(mkEhr(tagged Invalid));
     Vector#(k, Ehr#(2, Bool)) willDequeue <- replicateM(mkEhr(False));
+    PulseWire clear_req <- mkPulseWire ; 
 
     function SupFifoEnq#(t) getEnqIfc(Integer i);
         Bit#(TLog#(k)) fifoIdx = enqueueFifo[0]+fromInteger(i);
@@ -199,6 +179,17 @@ module mkUGSupFifo(SupFifo#(k,n,t)) provisos (
 
     (* fire_when_enabled, no_implicit_conditions *)
     rule canonicalize;
+      if(clear_req) begin
+        for(Integer i = 0; i < valueOf(k); i = i+1) begin
+          enqueueFifo[i] <= unpack(0);
+          dequeueFifo[i] <= unpack(0);
+          enqueueElement[i][1] <= tagged Invalid;
+          willDequeue[i][1] <= False;
+          internalFifos[i].clear;
+        end
+      end
+      //*/
+      else begin
         for (Integer i = 0; i < valueOf(k); i = i+1) begin
             if(enqueueElement[i][1] matches tagged Valid .el) begin
                 enqueueFifo[i] <= enqueueFifo[0]+fromInteger(i)+1;
@@ -219,6 +210,7 @@ module mkUGSupFifo(SupFifo#(k,n,t)) provisos (
             enqueueElement[i][1] <= tagged Invalid;
             willDequeue[i][1] <= False;
         end
+      end
     endrule
 
     Vector#(k,Integer) indexes = genVector;
@@ -228,6 +220,10 @@ module mkUGSupFifo(SupFifo#(k,n,t)) provisos (
     method Bool internalEmpty;
         function Bool isEmpty(Integer i) = !internalFifos[i].notEmpty;
         return all(isEmpty, indexes);
+    endmethod
+
+    method Action clear;
+        clear_req.send;
     endmethod
 endmodule
 
@@ -258,6 +254,9 @@ module mkSupFifo(SupFifo#(k,n,t)) provisos (
     interface Vector deqS = map(getDeqIfc, indexes);
 
     method Bool internalEmpty = ugf.internalEmpty;
+
+    method Action clear = ugf.clear;
+
 endmodule
 
 
