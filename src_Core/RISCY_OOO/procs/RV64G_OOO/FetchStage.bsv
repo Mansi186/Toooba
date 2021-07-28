@@ -40,6 +40,7 @@
 
 `include "ProcConfig.bsv"
 
+import BranchPredictor :: *;  //import new unit
 import BrPred::*;
 import DirPredictor::*;
 import Btb::*;
@@ -120,6 +121,9 @@ interface FetchStage;
 `ifdef RVFI_DII
     interface Client#(Dii_Parcel_Id, Dii_Parcels) diiIfc;
 `endif
+
+    //new branchpredictor ifc
+    interface BranchPredictorIfc branchpredifc; 
 
     // starting and stopping
     method Action start(CapMem pc
@@ -381,6 +385,12 @@ module mkFetchStage(FetchStage);
     RWire#(TrainNAP) napTrainByDec <- mkRWire;
     Fifo#(1, TrainNAP) napTrainByDecQ <- mkPipelineFifo; // cut off critical path
 
+    // New Branch Predictor Interface
+    BranchPredictorIfc branchpred <- mkBranchPredictor;
+    Reg#(Addr) pcreg <- mkReg(0) ;
+    Reg#(Addr) nextpcreg <- mkReg(0) ;
+    Reg#(Bit#(4)) ii <- mkReg(4'b0000) ;
+
     // TLB and Cache connections
     ITlb iTlb <- mkITlb;
     ICoCache iMem <- mkICoCache;
@@ -449,7 +459,7 @@ module mkFetchStage(FetchStage);
         Maybe#(CapMem) pred_next_pc = pred_future_pc[posLastSupX2];
 
         let next_fetch_pc = fromMaybe(addPc(pc, 2 * (zeroExtend(posLastSupX2) + 1)), pred_next_pc);
-        pc_reg[pc_fetch1_port] <= next_fetch_pc;
+        pc_reg[pc_fetch1_port] <= next_fetch_pc;   //pc <= nextpc
 
 `ifdef RVFI_DII
         Dii_Parcel_Id dii_pid = dii_pid_reg[pc_fetch1_port];
@@ -538,7 +548,7 @@ module mkFetchStage(FetchStage);
 // Break out of i$
     Vector#(SupSizeX2,Integer) indexes = genVector;
     function Bool f32d_lane_notFull(Integer i) = f32d.enqS[i].canEnq;
-    rule doFetch3(all(f32d_lane_notFull, indexes));
+    rule doFetch3(all(f32d_lane_notFull, indexes));   
         let fetch3In = f22f3.first;
         if (verbosity >= 2) begin
             if (f22f3.notEmpty)
@@ -593,6 +603,56 @@ module mkFetchStage(FetchStage);
 
    function Bool isCurrent(Fetch3ToDecode in) = (in.main_epoch == f_main_epoch && in.decode_epoch == decode_epoch[0]);
 
+   //make a new rule to fetch npc from getIFData() here
+   rule npcfromBranchPred;
+   /*
+        if(flushing) begin
+            fifo_decode.clear;
+            let x <- branchpred.getIFData();
+            $display ("flush & fetch npc ", x.pc); 
+            i <= 3;  
+            nextpcreg <= x.pc;  //npc
+
+            if(d_flush.notEmpty)
+                d_flush.deq;
+            
+            if(e_flush.notEmpty || c_flush.notEmpty) begin
+                fifo_execute.clear;
+            end
+
+            if(e_flush.notEmpty)
+                e_flush.deq;            
+
+            if(c_flush.notEmpty) begin
+                fifo_commit.clear;
+                c_flush.deq;
+            end
+        end
+
+        else begin
+*/
+            if(ii==0) begin
+                let x <- branchpred.getIFData();
+                $display ("fetch npc ", x.pc); 
+                ii <= x.seg_cnt - 1;  
+                pcreg <= nextpcreg;
+                nextpcreg <= x.pc;
+
+                //fifo_decode.enqS[0].enq(PcData { pc : nextpcreg , instsize : 1,  nextpc : x.pc} );
+                $display ("1 enq             pc, npc ", nextpcreg, x.pc,  "  t %0t ", $time); 
+            end
+
+            else begin
+                pcreg <= nextpcreg;
+                nextpcreg <= nextpcreg + 2; //*instsize
+                //fifo_decode.enqS[0].enq(PcData { pc : nextpcreg , instsize : 1,  nextpc : nextpcreg + 2 } ); //instsize
+                $display ("2 enq             pc, npc ", nextpcreg, nextpcreg + 2, "  t %0t ", $time);
+                ii <= ii - 1;  //instsize
+            end
+           
+       // end   
+   endrule
+
    rule doDecodeFlush(f32d.deqS[0].canDeq && !isCurrent(f32d.deqS[0].first));
       for (Integer i = 0; i < valueOf(SupSizeX2); i = i + 1)
          if (f32d.deqS[i].canDeq &&& !isCurrent(f32d.deqS[i].first)) begin
@@ -601,7 +661,7 @@ module mkFetchStage(FetchStage);
          end
    endrule: doDecodeFlush
 
-   rule doDecode(f32d.deqS[0].canDeq && isCurrent(f32d.deqS[0].first));
+   rule doDecode(f32d.deqS[0].canDeq && isCurrent(f32d.deqS[0].first));   //send info to putDecodeInst() inside this rule
       Vector#(SupSize, Maybe#(InstrFromFetch3)) decodeIn = replicate(Invalid);
       // Express the incoming fragments as a vector of maybes.
       Vector#(SupSizeX2, Maybe#(Fetch3ToDecode)) frags;
@@ -612,6 +672,7 @@ module mkFetchStage(FetchStage);
       Maybe#(Bit#(TLog#(SupSizeX2))) m_used_frag_count = Invalid;
       Bit#(TLog#(SupSize)) pick_count = 0;
       Bool prev_frag_available = False;
+      //Bool flush = False;
       for (Integer i = 0; i < valueOf(SupSizeX2) && !isValid(decodeIn[valueOf(SupSize) - 1]); i = i + 1) begin
          Maybe#(InstrFromFetch3) new_pick = Invalid;
          if (frags[i] matches tagged Valid .frag) begin
@@ -756,7 +817,7 @@ module mkFetchStage(FetchStage);
                   if (nextPc matches tagged Valid .decode_pred_next_pc &&& (decode_pred_next_pc != ppc)) begin
                      if (verbose) $display("%x: ppc and decodeppc :  %h %h", pc, ppc, decode_pred_next_pc);
                      decode_epoch_local = !decode_epoch_local;
-                     redirectPc = Valid (decode_pred_next_pc); // record redirect next pc
+                     redirectPc = Valid (decode_pred_next_pc); // record redirect next pc  ** flushes here  **
 `ifdef RVFI_DII
                      redirectDiiPid = Valid (in.dii_pid + ((in.inst_kind == Inst_32b) ? 2 : 1));
 `endif
@@ -771,6 +832,31 @@ module mkFetchStage(FetchStage);
 `endif
                   end
                end // if (!isValid(cause))
+
+               //decode completed?
+               //new bpinterface
+
+
+                //if(!flush) begin
+                        Maybe#(Addr) npc;
+                        if(redirectPc matches tagged Valid .rpc)
+                            npc = tagged Valid (truncate(rpc));
+                        else 
+                            npc = tagged Invalid;
+
+                        Addr pc_ = truncate(pc);
+                        let flush <- branchpred.decode[i].putDecodeInst(isValid(npc), pc_, (in.inst_kind == Inst_32b) ? 2 : 1 , npc);
+                        $display ("decode module[%0d] pc, npc ", i, pc, ppc);   //pc or last_x16_pc??
+
+                        $display ("decode module[%0d] flush ", i, flush, "       t %0t ", $time);
+                //end
+                //if(flush) 
+                    //d_flush.enq(?);
+                
+                //end new bpinterface
+
+
+
                let out = FromFetchStage{pc: pc,
 `ifdef RVFI_DII
                                         dii_pid: in.dii_pid,
@@ -862,6 +948,8 @@ module mkFetchStage(FetchStage);
 `ifdef RVFI_DII
     interface diiIfc = dii.toCore;
 `endif
+
+    interface branchpredifc = branchpred; //new branchpredictor ifc
 
     method Action start(
         CapMem start_pc

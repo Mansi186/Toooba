@@ -192,6 +192,10 @@ interface AluExeInput;
     interface Vector#(2, SendBypass) sendBypass;
     // write reg file & set conservative sb
     method Action writeRegFile(PhyRIndx dst, CapPipe data);
+
+    //adding new method
+    method Action sendExeDataToPipeline (InstTag inst_tag, Bool taken, CapMem new_pc, Bool exception);
+    
     // redirect
     method Action redirect(CapMem new_pc, SpecTag spec_tag, InstTag inst_tag);
     // spec update
@@ -462,6 +466,8 @@ module mkAluExePipeline#(AluExeInput inIfc)(AluExePipeline);
 `endif
 `endif
 
+        // to new branch predictor
+        inIfc.sendExeDataToPipeline( x.tag, x.controlFlow.taken, cast(x.controlFlow.nextPc), False);  //exception?
         // handle spec tags for branch predictions
         // TODO what happens here if we trap?
         (* split *)

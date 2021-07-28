@@ -115,6 +115,10 @@ interface CommitInput;
     method Action setReconcileD; // recocile D$
     // redirect
     method Action killAll;
+
+    //adding new method
+    method Action sendCommitDataToPipeline (Integer i, CapMem new_pc, Bool committed, InstTag inst_tag);
+    
     method Action redirectPc(CapMem trap_pc
 `ifdef RVFI_DII
         , Dii_Parcel_Id dii_pid
@@ -1255,6 +1259,7 @@ module mkCommitStage#(CommitInput inIfc)(CommitStage);
                     endcase
                     if (opcode == opcMiscMem && funct3 == fnFENCE) fenceCnt = fenceCnt + 1;
                 end
+                inIfc.sendCommitDataToPipeline(i, x.pc , !stop , inst_tag);
             end
 `ifdef PERFORMANCE_MONITORING
 `ifdef CONTRACTS_VERIFY

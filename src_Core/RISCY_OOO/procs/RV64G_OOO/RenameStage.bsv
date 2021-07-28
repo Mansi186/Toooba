@@ -89,6 +89,10 @@ interface RenameInput;
     interface Vector#(FpuMulDivExeNum, ReservationStationFpuMulDiv) rsFpuMulDivIfc;
     interface ReservationStationMem rsMemIfc;
     interface SplitLSQ lsqIfc;
+
+    //adding new method
+    method Action sendRenameDataToPipeline (Integer i, CapMem pc, InstTag inst_tag);
+
     // pending MMIO req from platform
     method Bool pendingMMIOPRq;
     // record that a CSR inst or interrupt is sent to ROB
@@ -1152,6 +1156,7 @@ module mkRenameStage#(RenameInput inIfc)(RenameStage);
                             debug_step = True;
                         end
 `endif
+                        inIfc.sendRenameDataToPipeline(i, pc, inst_tag);
                     end
                 end
             end

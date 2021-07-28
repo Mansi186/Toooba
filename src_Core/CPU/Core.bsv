@@ -104,6 +104,8 @@ import CHERICC_Fat::*;
 import Bag::*;
 import VnD :: *;
 
+import BranchPredictor :: *;  //import new unit
+
 `ifdef RVFI_DII
 import Toooba_RVFI_DII_Bridge::*;
 `endif
@@ -286,6 +288,7 @@ module mkCore#(CoreId coreId)(Core);
     FetchStage fetchStage <- mkFetchStage;
     ITlb iTlb = fetchStage.iTlbIfc;
     ICoCache iMem = fetchStage.iMemIfc;
+    BranchPredictorIfc branchpred = fetchStage.branchpredifc;
 
     // ================================================================
     // If using Direct Instruction Injection then make a
@@ -392,6 +395,7 @@ module mkCore#(CoreId coreId)(Core);
 
         Vector#(AluExeNum, FIFO#(FetchTrainBP)) trainBPQ <- replicateM(mkFIFO);
         Vector#(AluExeNum, AluExePipeline) aluExe;
+        //Reg#(Bool) flushexe  <- mkReg(False);
         for(Integer i = 0; i < valueof(AluExeNum); i = i+1) begin
             Vector#(2, SendBypass) sendBypassIfc; // exe and finish
             for(Integer sendPort = 0; sendPort < 2; sendPort = sendPort + 1) begin
@@ -409,6 +413,7 @@ module mkCore#(CoreId coreId)(Core);
                     endmethod
                 endinterface);
             end
+            
             let aluExeInput = (interface AluExeInput;
                 method sbCons_lazyLookup = sbCons.lazyLookup[aluRdPort(i)].get;
                 method rf_rd1 = cast(rf.read[aluRdPort(i)].rd1);
@@ -423,6 +428,18 @@ module mkCore#(CoreId coreId)(Core);
                 method setRegReadyAggr = writeAggr(aluWrAggrPort(i));
                 interface sendBypass = sendBypassIfc;
                 method writeRegFile = writeCons(aluWrConsPort(i));
+
+                //adding new method--
+                method Action sendExeDataToPipeline (InstTag inst_tag, Bool taken, CapMem new_pc, Bool exception);
+                    //exefifo.enqS[i].enq(NextPcData { instId : inst_tag.id  , nextpc : new_pc }); //or exefifo.put? - same thing
+                    $display("[ALU DataToPipeline - %d] ", i, fshow(new_pc),
+                                 "; ", fshow(inst_tag));
+                    //if(!flushexe)
+                    let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
+                    Addr npc = truncate(new_pc);
+                    let flushexe <- branchpred.execute[i].putExecutedInst(inst_id, taken, npc, exception);  //tag -> id?
+                endmethod 
+
                 method Action redirect(CapMem new_pc, SpecTag spec_tag, InstTag inst_tag);
                     if (verbose) begin
                         $display("[ALU redirect - %d] ", i, fshow(new_pc),
@@ -466,6 +483,12 @@ module mkCore#(CoreId coreId)(Core);
                     train.dpTrain, train.mispred, train.isCompressed
                 );
             endrule
+
+            /*add new rule to send to branchpredictor
+            rule executetoBranchPred:
+                flush <- fetchstage.branchpredictor.execute[ii].putExecutedInst()  //flush - reg or wire?
+            endrule
+            */
         end
 
         Vector#(FpuMulDivExeNum, FpuMulDivExePipeline) fpuMulDivExe;
@@ -636,6 +659,18 @@ module mkCore#(CoreId coreId)(Core);
         interface lsqIfc = lsq;
         method pendingMMIOPRq = mmio.hasPendingPRq;
         method issueCsrInstOrInterrupt = csrInstOrInterruptInflight_rename._write(True);
+
+
+        //adding new method--
+        method Action sendRenameDataToPipeline (Integer i, CapMem pc, InstTag inst_tag);
+            //renamefifo.enqS[i].enq(NextPcData { instId : inst_tag.id  , pc : pc });
+            $display("[Rename DataToPipeline] ", fshow(pc),
+                                 "; ", fshow(inst_tag)); 
+            let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
+            Addr pc_ = truncate(pc);
+            let flushrename <- branchpred.rename[i].putRenameInst(inst_id, pc_);
+        endmethod 
+
         method Bool checkDeadlock;
 `ifdef CHECK_DEADLOCK
             return startDeadlockCheck;
@@ -649,6 +684,13 @@ module mkCore#(CoreId coreId)(Core);
 `endif
     endinterface);
     RenameStage renameStage <- mkRenameStage(renameInput);
+
+
+    /*rule to read n deq from renamefifo and send to branch predictor
+    rule renametoBranchPred:
+        flush <- fetchstage.branchpredictor.rename[ii].putRenameInst()  //flush - reg or wire?
+    endrule
+*/
 
     // commit stage
     let commitInput = (interface CommitInput;
@@ -698,6 +740,19 @@ module mkCore#(CoreId coreId)(Core);
         method setReconcileI = reconcile_i._write(True);
         method setReconcileD = reconcile_d._write(True);
         method killAll = coreFix.killAll;
+
+        //adding new method--
+        method Action sendCommitDataToPipeline (Integer i, CapMem new_pc, Bool committed, InstTag inst_tag);
+            //commitfifo.enqS[i].enq(NextPcData { instId : inst_tag.id  , nextpc : new_pc }); 
+            $display("[Commit DataToPipeline ] ", fshow(new_pc),
+                                 "; ", fshow(inst_tag));
+            //let inst_id = 2*valueOf(inst_tag.ptr) + valueOf(inst_tag.way);
+            let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
+            Addr npc = truncate(new_pc);
+            let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);
+        endmethod 
+        
+        
         method redirectPc = fetchStage.redirect;
         method setFetchWaitRedirect = fetchStage.setWaitRedirect;
 `ifdef INCLUDE_GDB_CONTROL
@@ -714,6 +769,11 @@ module mkCore#(CoreId coreId)(Core);
 `endif
         endmethod
 
+        /*rule to read n deq from commitfifo and send to branch predictor
+        rule committoBranchPred:
+            flush <- fetchstage.branchpredictor..commit[ii].putCommittedInst()  //flush - reg or wire?
+        endrule
+*/
 `ifdef PERFORMANCE_MONITORING
 `ifdef CONTRACTS_VERIFY
         method Action updateTargets(Vector#(SupSize, Maybe#(CapMem)) targets);

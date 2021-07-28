@@ -21,7 +21,7 @@ endif
 
 %.bo:
 	$(info building $@)
-	bsc -elab -sim  $(TMP_DIRS)  $(RTL_GEN_DIRS)  $(BSC_COMPILATION_FLAGS)  -p $(BSC_PATH) $<
+	bsc -u -elab -sim  $(TMP_DIRS)  $(RTL_GEN_DIRS)  $(BSC_COMPILATION_FLAGS)  -p $(BSC_PATH) $<
 
 .PHONY: compile
 compile: build_dir/Top_HW_Side.bo | build_dir
