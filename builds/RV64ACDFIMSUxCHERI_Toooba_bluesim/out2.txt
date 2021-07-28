@@ -1,0 +1,228 @@
+Warning: file 'Mem.hex' for memory 'rf' has a gap at addresses 131 to 33554430.
+1: top.soc_top.rl_reset_start_initial ...
+fetch npc                    8
+1 enq             pc, npc                    0                   8  t 10 
+================================================================
+Bluespec RISC-V standalone system simulation v1.2
+Copyright (c) 2017-2019 Bluespec, Inc. All Rights Reserved.
+================================================================
+INFO: watch_tohost 0, tohost_addr = 0x0, fromhost_addr = 0x0
+1: top.soc_top.corew.proc.method start: startpc 1000, tohostAddr 0, fromhostAddr 0
+1: top.soc_top.corew.method start: proc.start (pc 1000, tohostAddr 0, fromhostAddr 0)
+1: top.soc_top.method start (tohost 0, fromhost 0)
+2 enq             pc, npc                    8                  10  t 20 
+3: Mem_Model read  [0x0] => 0x3ff026300b00f9303ff066300900f9303ff0a6300800f9334202f7304c0006f
+2 enq             pc, npc                   10                  12  t 30 
+2 enq             pc, npc                   12                  14  t 40 
+fetch npc                   16
+1 enq             pc, npc                   14                  16  t 50 
+2 enq             pc, npc                   16                  18  t 60 
+7: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001000, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001000, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                   18                  20  t 70 
+8: Mem_Model read  [0x0] => 0x3ff026300b00f9303ff066300900f9303ff0a6300800f9334202f7304c0006f
+2 enq             pc, npc                   20                  22  t 80 
+fetch npc                   24
+1 enq             pc, npc                   22                  24  t 90 
+2 enq             pc, npc                   24                  26  t 100 
+2 enq             pc, npc                   26                  28  t 110 
+11: Mem_Controller.set_addr_map: addr_base 0x80000000 addr_lim 0xc0000000
+  SoC address map:
+  Boot ROM:        0x1000 .. 0x2000
+  Mem0 Controller: 0x80000000 .. 0xc0000000
+  UART0:           0xc0000000 .. 0xc0000080
+11: top.soc_top.rl_reset_complete_initial
+2 enq             pc, npc                   28                  30  t 120 
+fetch npc                   32
+1 enq             pc, npc                   30                  32  t 130 
+2 enq             pc, npc                   32                  34  t 140 
+2 enq             pc, npc                   34                  36  t 150 
+2 enq             pc, npc                   36                  38  t 160 
+17: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0202859300000297, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0202859300000297 'h0000000000000000  > } }
+fetch npc                   40
+1 enq             pc, npc                   38                  40  t 170 
+2 enq             pc, npc                   40                  42  t 180 
+2 enq             pc, npc                   42                  44  t 190 
+20: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001000, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001000, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                   44                  46  t 200 
+fetch npc                   48
+1 enq             pc, npc                   46                  48  t 210 
+2 enq             pc, npc                   48                  50  t 220 
+2 enq             pc, npc                   50                  52  t 230 
+2 enq             pc, npc                   52                  54  t 240 
+fetch npc                   56
+1 enq             pc, npc                   54                  56  t 250 
+2 enq             pc, npc                   56                  58  t 260 
+2 enq             pc, npc                   58                  60  t 270 
+2 enq             pc, npc                   60                  62  t 280 
+fetch npc                   64
+1 enq             pc, npc                   62                  64  t 290 
+30: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0202859300000297, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0202859300000297 'h0000000000000000  > } }
+2 enq             pc, npc                   64                  66  t 300 
+2 enq             pc, npc                   66                  68  t 310 
+2 enq             pc, npc                   68                  70  t 320 
+33: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001000, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001000, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+fetch npc                   72
+1 enq             pc, npc                   70                  72  t 330 
+2 enq             pc, npc                   72                  74  t 340 
+2 enq             pc, npc                   74                  76  t 350 
+2 enq             pc, npc                   76                  78  t 360 
+fetch npc                   80
+1 enq             pc, npc                   78                  80  t 370 
+2 enq             pc, npc                   80                  82  t 380 
+2 enq             pc, npc                   82                  84  t 390 
+2 enq             pc, npc                   84                  86  t 400 
+fetch npc                   88
+1 enq             pc, npc                   86                  88  t 410 
+2 enq             pc, npc                   88                  90  t 420 
+43: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0202859300000297, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0202859300000297 'h0000000000000000  > } }
+2 enq             pc, npc                   90                  92  t 430 
+2 enq             pc, npc                   92                  94  t 440 
+fetch npc                   96
+1 enq             pc, npc                   94                  96  t 450 
+46: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001000, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001000, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                   96                  98  t 460 
+2 enq             pc, npc                   98                 100  t 470 
+2 enq             pc, npc                  100                 102  t 480 
+fetch npc                  104
+1 enq             pc, npc                  102                 104  t 490 
+2 enq             pc, npc                  104                 106  t 500 
+2 enq             pc, npc                  106                 108  t 510 
+2 enq             pc, npc                  108                 110  t 520 
+fetch npc                  112
+1 enq             pc, npc                  110                 112  t 530 
+2 enq             pc, npc                  112                 114  t 540 
+2 enq             pc, npc                  114                 116  t 550 
+56: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0202859300000297, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0202859300000297 'h0000000000000000  > } }
+2 enq             pc, npc                  116                 118  t 560 
+fetch npc                  120
+1 enq             pc, npc                  118                 120  t 570 
+2 enq             pc, npc                  120                 122  t 580 
+2 enq             pc, npc                  122                 124  t 590 
+2 enq             pc, npc                  124                 126  t 600 
+decode module[0] pc, npc 680559541545018392099120684367207206912680559541545018392099120684367207206916
+decode module[0] flush 0       t 600 
+decode module[1] pc, npc 680559541545018392099120684367207206916680559541545018392099120684367207206920
+decode module[1] flush 0       t 600 
+fetch npc                  128
+1 enq             pc, npc                  126                 128  t 610 
+2 enq             pc, npc                  128                 130  t 620 
+2 enq             pc, npc                  130                 132  t 630 
+64: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                  132                 134  t 640 
+74: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+77: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+87: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+90: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+100: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+103: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+113: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+decode module[0] pc, npc 680559541545018392099120684367207206920680559541545018392099120684367207206924
+decode module[0] flush 0       t 1170 
+decode module[1] pc, npc 680559541545018392099120684367207206924680559541545018392099120684367207206928
+decode module[1] flush 0       t 1170 
+121: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+131: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+134: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+144: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+147: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+157: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+160: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+170: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+decode module[0] pc, npc 680559541545018392099120684367207206928      649035871190276684584275742294016
+decode module[0] flush 0       t 1740 
+178: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+188: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+191: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+201: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+204: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+214: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+217: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+227: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+235: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+245: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+248: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+258: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+261: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+271: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+274: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+284: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
