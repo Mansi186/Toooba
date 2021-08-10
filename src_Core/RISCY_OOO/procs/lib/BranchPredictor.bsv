@@ -93,10 +93,15 @@ module mkBranchPredictor(BranchPredictorIfc);
 
     FIFOF#(DataIF) pc_fifo <- mkSizedFIFOF(16);  //sup fifo needed?
 
-    Ehr#(SupSize, DataIF)   pc_reg  <- mkEhr(DataIF {pc : ? , seg_cnt : 0});
+    //Ehr#(SupSize, DataIF)   pc_reg  <- mkEhr(DataIF {pc : ? , seg_cnt : 0});
 
-    Ehr#(SupSize, Bool)    deq_pcfifo  <- mkEhr(False);
-    Ehr#(SupSize, Bool)    npcfifo  <- mkEhr(False);
+    Vector#(SupSize, Reg#(DataIF))   pc_reg  <- replicateM(mkRegU);
+
+    //Ehr#(SupSize, Bool)    deq_pcfifo  <- mkEhr(False);
+    //Ehr#(SupSize, Bool)    npcfifo  <- mkEhr(False);
+
+    Vector#(SupSize, Reg#(Bool) )   deq_pcfifo  <- replicateM(mkReg(False));
+    Vector#(SupSize, Reg#(Bool))    npcfifo  <- replicateM(mkReg(False));
 
     Vector#(SupSize, PulseWire) pcdeqwire <- replicateM(mkPulseWire);
 
@@ -193,17 +198,26 @@ module mkBranchPredictor(BranchPredictorIfc);
                 if(d_nextpc[i].wget() matches tagged Valid .npc) begin
                     //regnpc.wset(npc);
                     //regnpc <= Valid (npc);
-                    //if(npc_fifo.notFull) 
+                    if(npc_fifo.notEmpty)
+                        npc_fifo.deq; 
                     npc_fifo.enq(npc);
                     i = valueOf(SupSize);
                 end
                 else if(e_nextpc[i].wget() matches tagged Valid .npc) begin
+                    if(npc_fifo.notEmpty)
+                        npc_fifo.deq; 
                     npc_fifo.enq(npc);
+                    if(npc_fifo_rename.notEmpty)
+                        npc_fifo_rename.deq;
                     npc_fifo_rename.enq(npc);
                     i = valueOf(SupSize);
                 end
                 else if(c_nextpc[i].wget() matches tagged Valid .npc) begin
+                    if(npc_fifo.notEmpty)
+                        npc_fifo.deq; 
                     npc_fifo.enq(npc);
+                    if(npc_fifo_rename.notEmpty)
+                        npc_fifo_rename.deq;
                     npc_fifo_rename.enq(npc);
                     i = valueOf(SupSize);
                 end
@@ -211,8 +225,10 @@ module mkBranchPredictor(BranchPredictorIfc);
             end
             
         end
-        else if(rename_deq[0] || rename_deq[1])
+        else if(rename_deq[0] || rename_deq[1]) begin
             npc_fifo_rename.clear;
+            $display("clear npc_fifo_rename");
+        end
 
     endrule
 
@@ -239,13 +255,14 @@ module mkBranchPredictor(BranchPredictorIfc);
 
                 DataIF next_pc = pc_reg[i];
 
-                //$display("*sc* ",instId , next_pc.seg_cnt);
+                $display("decode next_pc ival", next_pc);
+                $display("decode next_pc ival");
                
                 if(npc_fifo_rename.notEmpty && !did_npc) begin
                     next_pc.pc = npc_fifo_rename.first + 2*extend(instsize); //npc_fifo_rename.first == pc?
                     next_pc.seg_cnt = 4 - 2*extend(instsize); 
-                    //$display("*pc* ", npc_fifo_rename.first+ 2* extend(instsize));
                     rename_deq[i].send;
+                    $display("rename_deq sent");
                     did_npc = True;
                 end
 
@@ -280,7 +297,7 @@ module mkBranchPredictor(BranchPredictorIfc);
                 end
 
                 //data_rename[i].wset(NextPcData { instId : instId , nextpc : next_pc.pc});
-                $display("decode npc", next_pc.pc);
+                $display(" decode npc ", next_pc.pc);
 
                 //decode_npc[i] <= (PcNextPc { pc : pc , nextpc : next_pc.pc});
                 decode_npc.enqS[i].enq(PcNextPc { pc : pc , nextpc : next_pc.pc });
@@ -362,7 +379,7 @@ module mkBranchPredictor(BranchPredictorIfc);
         DataIF temp = regDataIF;
 
         if(npc_fifo.notEmpty) begin
-            temp.pc = npc_fifo.first;  //should not be enqueued as the nextpc, is the current pc
+            temp.pc = npc_fifo.first;  //current pc  //problem full fifo
             //$display("*npcfifo*",npc_fifo.first);
             npc_fifo.deq;
         end

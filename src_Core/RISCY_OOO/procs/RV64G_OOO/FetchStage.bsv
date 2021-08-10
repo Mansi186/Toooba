@@ -672,7 +672,7 @@ module mkFetchStage(FetchStage);
       Maybe#(Bit#(TLog#(SupSizeX2))) m_used_frag_count = Invalid;
       Bit#(TLog#(SupSize)) pick_count = 0;
       Bool prev_frag_available = False;
-      //Bool flush = False;
+      Bool flush = False;
       for (Integer i = 0; i < valueOf(SupSizeX2) && !isValid(decodeIn[valueOf(SupSize) - 1]); i = i + 1) begin
          Maybe#(InstrFromFetch3) new_pick = Invalid;
          if (frags[i] matches tagged Valid .frag) begin
@@ -834,10 +834,10 @@ module mkFetchStage(FetchStage);
                end // if (!isValid(cause))
 
                //decode completed?
+
                //new bpinterface
 
-
-                //if(!flush) begin
+                if(!flush) begin
                         Maybe#(Addr) npc;
                         if(redirectPc matches tagged Valid .rpc)
                             npc = tagged Valid (truncate(rpc));
@@ -845,11 +845,11 @@ module mkFetchStage(FetchStage);
                             npc = tagged Invalid;
 
                         Addr pc_ = truncate(pc);
-                        let flush <- branchpred.decode[i].putDecodeInst(isValid(npc), pc_, (in.inst_kind == Inst_32b) ? 2 : 1 , npc);
-                        $display ("decode module[%0d] pc, npc ", i, pc, ppc);   //pc or last_x16_pc??
+                        flush <- branchpred.decode[i].putDecodeInst(isValid(npc), pc_, (in.inst_kind == Inst_32b) ? 2 : 1 , npc);
 
-                        $display ("decode module[%0d] flush ", i, flush, "       t %0t ", $time);
-                //end
+                        $display ("decode module[%0d] pc, npc  ", i, pc, ppc);   //pc or last_x16_pc??
+                        $display ("decode module[%0d] flush  ", i, flush);
+                end
                 //if(flush) 
                     //d_flush.enq(?);
                 

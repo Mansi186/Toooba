@@ -115,49 +115,177 @@ fetch npc                  120
 2 enq             pc, npc                  120                 122  t 580 
 2 enq             pc, npc                  122                 124  t 590 
 2 enq             pc, npc                  124                 126  t 600 
-decode module[0] pc, npc 680559541545018392099120684367207206912680559541545018392099120684367207206916
-decode module[0] flush 0       t 600 
-decode module[1] pc, npc 680559541545018392099120684367207206916680559541545018392099120684367207206920
-decode module[1] flush 0       t 600 
+decode next_pc ival196765270119568550570
+decode next_pc ival
+ decode npc 12297829382473034414
+decode module[0] pc, npc  680559541545018392099120684367207206912680559541545018392099120684367207206916
+decode module[0] flush  0
+decode next_pc ival196765270119568550570
+decode next_pc ival
+ decode npc 12297829382473034414
+decode module[1] pc, npc  680559541545018392099120684367207206916680559541545018392099120684367207206920
+decode module[1] flush  0
 fetch npc                  128
 1 enq             pc, npc                  126                 128  t 610 
+[Rename DataToPipeline] 'h1ffff0000000000000000000000001000; InstTag { way: 'h0, ptr: 'h00, t: 'h00 }
+id, npc 012297829382473034414
+[Rename DataToPipeline] 'h1ffff0000000000000000000000001004; InstTag { way: 'h1, ptr: 'h00, t: 'h01 }
+id, npc 112297829382473034414
 2 enq             pc, npc                  128                 130  t 620 
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h40, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h00, t: 'h00 }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
 2 enq             pc, npc                  130                 132  t 630 
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h40, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h00, t: 'h00 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000020 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Valid 'h40, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h41, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h00, t: 'h01 }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
 64: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
 2 enq             pc, npc                  132                 134  t 640 
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dst: tagged Valid PhyDst { indx: 'h40, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h00, t: 'h00 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000000001000, ppc: 'h1ffff0000000000000000000000001004, orig_inst: 'h00000297, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000020 }, regs: PhyRegs { src1: tagged Valid 'h40, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h41, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h00, t: 'h01 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Auipc, dst: tagged Valid PhyDst { indx: 'h40, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h00, t: 'h00 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000001000 o: 'h0000000000001000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff0000000000000000000000001004, controlFlow: ControlFlow { pc: v: True a: 'h0000000000001000 o: 'h0000000000001000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000000001004 o: 'h0000000000001004 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           1] 'h1ffff0000000000000000000000001004; InstTag { way: 'h0, ptr: 'h00, t: 'h00 }
+id, mnpc, npc 0                410012297829382473034414
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000020 }, dst: tagged Valid PhyDst { indx: 'h41, isFpuReg: False }, tag: InstTag { way: 'h1, ptr: 'h00, t: 'h01 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000001000 o: 'h0000000000001000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000000001004, ppc: 'h1ffff0000000000000000000000001008, orig_inst: 'h02028593, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+pc cleared
+fetch npc                 4100
+1 enq             pc, npc                  134                4100  t 660 
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Alu, dst: tagged Valid PhyDst { indx: 'h41, isFpuReg: False }, tag: InstTag { way: 'h1, ptr: 'h00, t: 'h01 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000001020 o: 'h0000000000001020 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff0000000000000000000000001008, controlFlow: ControlFlow { pc: v: True a: 'h0000000000001004 o: 'h0000000000001004 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000000001008 o: 'h0000000000001008 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           0] 'h1ffff0000000000000000000000001008; InstTag { way: 'h1, ptr: 'h00, t: 'h01 }
+id, mnpc, npc 1                410412297829382473034414
+instret:0  PC:0x1ffff0000000000000000000000001000  instr:0x00000297   iType:Auipc    [doCommitNormalInst [0]]         66
+[Commit DataToPipeline ] 'h1ffff0000000000000000000000001000; InstTag { way: 'h0, ptr: 'h00, t: 'h00 }
+[Commit DataToPipeline ] 'h1ffff0000000000000000000000001004; InstTag { way: 'h1, ptr: 'h00, t: 'h01 }
+2 enq             pc, npc                 4100                4102  t 670 
+instret:1  PC:0x1ffff0000000000000000000000001004  instr:0x02028593   iType:Alu    [doCommitNormalInst [0]]         67
+[Commit DataToPipeline ] 'h1ffff0000000000000000000000001004; InstTag { way: 'h1, ptr: 'h00, t: 'h01 }
+2 enq             pc, npc                 4102                4104  t 680 
+2 enq             pc, npc                 4104                4106  t 690 
+fetch npc                 4108
+1 enq             pc, npc                 4106                4108  t 700 
+2 enq             pc, npc                 4108                4110  t 710 
+2 enq             pc, npc                 4110                4112  t 720 
+2 enq             pc, npc                 4112                4114  t 730 
 74: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+fetch npc                 4116
+1 enq             pc, npc                 4114                4116  t 740 
+2 enq             pc, npc                 4116                4118  t 750 
+2 enq             pc, npc                 4118                4120  t 760 
 77: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                 4120                4122  t 770 
+fetch npc                 4124
+1 enq             pc, npc                 4122                4124  t 780 
+2 enq             pc, npc                 4124                4126  t 790 
+2 enq             pc, npc                 4126                4128  t 800 
+2 enq             pc, npc                 4128                4130  t 810 
+fetch npc                 4132
+1 enq             pc, npc                 4130                4132  t 820 
+2 enq             pc, npc                 4132                4134  t 830 
+2 enq             pc, npc                 4134                4136  t 840 
+2 enq             pc, npc                 4136                4138  t 850 
+fetch npc                 4140
+1 enq             pc, npc                 4138                4140  t 860 
 87: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+2 enq             pc, npc                 4140                4142  t 870 
+2 enq             pc, npc                 4142                4144  t 880 
+2 enq             pc, npc                 4144                4146  t 890 
 90: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+fetch npc                 4148
+1 enq             pc, npc                 4146                4148  t 900 
+2 enq             pc, npc                 4148                4150  t 910 
+2 enq             pc, npc                 4150                4152  t 920 
+2 enq             pc, npc                 4152                4154  t 930 
+fetch npc                 4156
+1 enq             pc, npc                 4154                4156  t 940 
+2 enq             pc, npc                 4156                4158  t 950 
+2 enq             pc, npc                 4158                4160  t 960 
+2 enq             pc, npc                 4160                4162  t 970 
+fetch npc                 4164
+1 enq             pc, npc                 4162                4164  t 980 
+2 enq             pc, npc                 4164                4166  t 990 
 100: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+2 enq             pc, npc                 4166                4168  t 1000 
+2 enq             pc, npc                 4168                4170  t 1010 
+fetch npc                 4172
+1 enq             pc, npc                 4170                4172  t 1020 
 103: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                 4172                4174  t 1030 
+2 enq             pc, npc                 4174                4176  t 1040 
+2 enq             pc, npc                 4176                4178  t 1050 
+fetch npc                 4180
+1 enq             pc, npc                 4178                4180  t 1060 
+2 enq             pc, npc                 4180                4182  t 1070 
+2 enq             pc, npc                 4182                4184  t 1080 
+2 enq             pc, npc                 4184                4186  t 1090 
+fetch npc                 4188
+1 enq             pc, npc                 4186                4188  t 1100 
+2 enq             pc, npc                 4188                4190  t 1110 
+2 enq             pc, npc                 4190                4192  t 1120 
 113: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
-decode module[0] pc, npc 680559541545018392099120684367207206920680559541545018392099120684367207206924
-decode module[0] flush 0       t 1170 
-decode module[1] pc, npc 680559541545018392099120684367207206924680559541545018392099120684367207206928
-decode module[1] flush 0       t 1170 
+2 enq             pc, npc                 4192                4194  t 1130 
+fetch npc                 4196
+1 enq             pc, npc                 4194                4196  t 1140 
+2 enq             pc, npc                 4196                4198  t 1150 
+2 enq             pc, npc                 4198                4200  t 1160 
+2 enq             pc, npc                 4200                4202  t 1170 
+decode next_pc ival196765270119568550632
+decode next_pc ival
+rename_deq sent
+ decode npc                 4104
+decode module[0] pc, npc  680559541545018392099120684367207206920680559541545018392099120684367207206924
+decode module[0] flush  0
+decode next_pc ival196765270119568550632
+decode next_pc ival
+rename_deq sent
+ decode npc                 4104
+decode module[1] pc, npc  680559541545018392099120684367207206924680559541545018392099120684367207206928
+decode module[1] flush  0
+fetch npc                 4204
+1 enq             pc, npc                 4202                4204  t 1180 
+2 enq             pc, npc                 4204                4206  t 1190 
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h42, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h01, t: 'h02 }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+2 enq             pc, npc                 4206                4208  t 1200 
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h42, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h01, t: 'h02 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
 121: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                 4208                4210  t 1210 
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, dst: tagged Valid PhyDst { indx: 'h42, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h01, t: 'h02 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000000001008, ppc: 'h1ffff000000000000000000000000100c, orig_inst: 'hf1402573, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+fetch npc                 4212
+1 enq             pc, npc                 4210                4212  t 1220 
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Csr, dst: tagged Valid PhyDst { indx: 'h42, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h01, t: 'h02 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged CSRData 'h000001ffffc0180040000000000000000, controlFlow: ControlFlow { pc: v: True a: 'h0000000000001008 o: 'h0000000000001008 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h000000000000100c o: 'h000000000000100c b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           0] 'h1ffff000000000000000000000000100c; InstTag { way: 'h0, ptr: 'h01, t: 'h02 }
+id, mnpc, npc 2                410812297829382473034410
+2 enq             pc, npc                 4212                4214  t 1230 
+instret:2  PC:0x1ffff0000000000000000000000001008  instr:0xf1402573   iType:Csr    [doCommitSystemInst]        123
+2 enq             pc, npc                 4214                4216  t 1240 
+2 enq             pc, npc                 4216                4218  t 1250 
+fetch npc                 4220
+1 enq             pc, npc                 4218                4220  t 1260 
+2 enq             pc, npc                 4220                4222  t 1270 
+2 enq             pc, npc                 4222                4224  t 1280 
+2 enq             pc, npc                 4224                4226  t 1290 
+fetch npc                 4228
+1 enq             pc, npc                 4226                4228  t 1300 
 131: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+2 enq             pc, npc                 4228                4230  t 1310 
+2 enq             pc, npc                 4230                4232  t 1320 
+2 enq             pc, npc                 4232                4234  t 1330 
 134: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
@@ -176,8 +304,6 @@ decode module[1] flush 0       t 1170
 170: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
-decode module[0] pc, npc 680559541545018392099120684367207206928      649035871190276684584275742294016
-decode module[0] flush 0       t 1740 
 178: top.soc_top.corew.proc.rl_handle_read_req: Ld request
     MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
     AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
@@ -226,3 +352,753 @@ decode module[0] flush 0       t 1740
 284: top.soc_top.corew.proc.rl_handle_read_rsps 
     AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
     Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+292: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+302: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+305: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001008, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001008, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+315: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0182b283f1402573, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0182b283f1402573  > } }
+318: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+328: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+331: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+341: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+decode next_pc ival                65664
+decode next_pc ival
+rename_deq sent
+ decode npc                 4104
+decode module[0] pc, npc  680559541545018392099120684367207206924680559541545018392099120684367207206928
+decode module[0] flush  0
+decode next_pc ival                65664
+decode next_pc ival
+ decode npc                    0
+decode module[1] pc, npc  680559541545018392099120684367207206928      649035871190276684584275742294016
+decode module[1] flush  1
+deq pcfifo                4108
+pc cleared
+fetch npc                    0
+1 enq             pc, npc                 4234                   0  t 3460 
+pc : 1ffff000000000000000000000000100c , hash(pc) : 100c
+[Rename DataToPipeline] 'h1ffff000000000000000000000000100c; InstTag { way: 'h1, ptr: 'h01, t: 'h03 }
+id, npc 3                4104
+[Rename DataToPipeline] 'h1ffff0000000000000000000000001010; InstTag { way: 'h0, ptr: 'h02, t: 'h04 }
+id, npc 4                4104
+2 enq             pc, npc                    0                   2  t 3470 
+[doDispatchMem] ToReservationStation { data: MemRSData { mem_func: Ld, imm: 'h00000018, ldstq_tag: tagged Ld 'h00, cap_checks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Ddc, low Vaddr, high VaddrPlusSize, inclusive True}, ddc_offset: True }, regs: PhyRegs { src1: tagged Valid 'h40, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h43, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+2 enq             pc, npc                    2                   4  t 3480 
+[doRegReadMem] ToSpecFifo { data: MemDispatchToRegRead { mem_func: Ld, imm: 'h00000018, regs: PhyRegs { src1: tagged Valid 'h40, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h43, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, ldstq_tag: tagged Ld 'h00, cap_checks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Ddc, low Vaddr, high VaddrPlusSize, inclusive True}, ddc_offset: True }, spec_bits: 'h000 }
+349: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                    4                   6  t 3490 
+[doExeMem] ToSpecFifo { data: MemRegReadToExe { mem_func: Ld, imm: 'h00000018, tag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, ldstq_tag: tagged Ld 'h00, rVal1: v: True a: 'h0000000000001000 o: 'h0000000000001000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, cap_checks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Ddc, low Vaddr, high VaddrPlusSize, inclusive True} }, spec_bits: 'h000 }
+fetch npc                    8
+1 enq             pc, npc                    6                   8  t 3500 
+[doFinishMem] DTlbResp { resp: <'h0000000000001018,tagged Invalid ,True>, inst: MemExeToFinish { mem_func: Ld, tag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, ldstq_tag: tagged Ld 'h00, shiftedBE: tagged DataMemAccess <V False False False False False False False False True True True True True True True True  >, vaddr: v: True a: 'h0000000000001018 o: 'h0000000000001018 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, misaligned: False, capStore: False, allowCapLoad: False, capException: tagged Invalid , check: tagged Valid BoundsCheck { authority_base: 'h0000000000000000, authority_top: 'h10000000000000000, authority_idx: 'h21, check_low: 'h0000000000001018, check_high: 'h00000000000001020, check_inclusive: True } }, specBits: 'h000 }
+2 enq             pc, npc                    8                  10  t 3510 
+[doDeqLdQ_MMIO_issue] LdQDeqEntry { tag: 'h00, instTag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, memFunc: Ld, byteOrTagEn: tagged DataMemAccess <V True True True True True True True True False False False False False False False False  >, unsignedLd: False, acq: False, rel: False, dst: tagged Valid PhyDst { indx: 'h43, isFpuReg: False }, paddr: 'h0000000000001018, isMMIO: True, shiftedBE: tagged DataMemAccess <V False False False False False False False False True True True True True True True True  >, fault: tagged Invalid , allowCap: False, killed: tagged Invalid  }; MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V False False False False False False False False True True True True True True True True  >, data: TaggedData { tag: , data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+2 enq             pc, npc                   10                  12  t 3520 
+2 enq             pc, npc                   12                  14  t 3530 
+fetch npc                   16
+1 enq             pc, npc                   14                  16  t 3540 
+2 enq             pc, npc                   16                  18  t 3550 
+2 enq             pc, npc                   18                  20  t 3560 
+2 enq             pc, npc                   20                  22  t 3570 
+fetch npc                   24
+1 enq             pc, npc                   22                  24  t 3580 
+359: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+2 enq             pc, npc                   24                  26  t 3590 
+2 enq             pc, npc                   26                  28  t 3600 
+2 enq             pc, npc                   28                  30  t 3610 
+362: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001010, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001010, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+fetch npc                   32
+1 enq             pc, npc                   30                  32  t 3620 
+2 enq             pc, npc                   32                  34  t 3630 
+2 enq             pc, npc                   34                  36  t 3640 
+2 enq             pc, npc                   36                  38  t 3650 
+fetch npc                   40
+1 enq             pc, npc                   38                  40  t 3660 
+2 enq             pc, npc                   40                  42  t 3670 
+2 enq             pc, npc                   42                  44  t 3680 
+2 enq             pc, npc                   44                  46  t 3690 
+fetch npc                   48
+1 enq             pc, npc                   46                  48  t 3700 
+2 enq             pc, npc                   48                  50  t 3710 
+372: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000000028067, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000028067 'h0000000000000000  > } }
+2 enq             pc, npc                   50                  52  t 3720 
+2 enq             pc, npc                   52                  54  t 3730 
+fetch npc                   56
+1 enq             pc, npc                   54                  56  t 3740 
+375: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                   56                  58  t 3750 
+2 enq             pc, npc                   58                  60  t 3760 
+2 enq             pc, npc                   60                  62  t 3770 
+fetch npc                   64
+1 enq             pc, npc                   62                  64  t 3780 
+2 enq             pc, npc                   64                  66  t 3790 
+2 enq             pc, npc                   66                  68  t 3800 
+2 enq             pc, npc                   68                  70  t 3810 
+fetch npc                   72
+1 enq             pc, npc                   70                  72  t 3820 
+2 enq             pc, npc                   72                  74  t 3830 
+2 enq             pc, npc                   74                  76  t 3840 
+385: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+2 enq             pc, npc                   76                  78  t 3850 
+fetch npc                   80
+1 enq             pc, npc                   78                  80  t 3860 
+2 enq             pc, npc                   80                  82  t 3870 
+388: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                   82                  84  t 3880 
+2 enq             pc, npc                   84                  86  t 3890 
+fetch npc                   88
+1 enq             pc, npc                   86                  88  t 3900 
+2 enq             pc, npc                   88                  90  t 3910 
+2 enq             pc, npc                   90                  92  t 3920 
+2 enq             pc, npc                   92                  94  t 3930 
+fetch npc                   96
+1 enq             pc, npc                   94                  96  t 3940 
+2 enq             pc, npc                   96                  98  t 3950 
+2 enq             pc, npc                   98                 100  t 3960 
+2 enq             pc, npc                  100                 102  t 3970 
+398: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+fetch npc                  104
+1 enq             pc, npc                  102                 104  t 3980 
+2 enq             pc, npc                  104                 106  t 3990 
+2 enq             pc, npc                  106                 108  t 4000 
+2 enq             pc, npc                  108                 110  t 4010 
+402: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V False False False False False False False False True True True True True True True True  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+fetch npc                  112
+1 enq             pc, npc                  110                 112  t 4020 
+2 enq             pc, npc                  112                 114  t 4030 
+2 enq             pc, npc                  114                 116  t 4040 
+2 enq             pc, npc                  116                 118  t 4050 
+fetch npc                  120
+1 enq             pc, npc                  118                 120  t 4060 
+2 enq             pc, npc                  120                 122  t 4070 
+2 enq             pc, npc                  122                 124  t 4080 
+2 enq             pc, npc                  124                 126  t 4090 
+fetch npc                  128
+1 enq             pc, npc                  126                 128  t 4100 
+2 enq             pc, npc                  128                 130  t 4110 
+412: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+2 enq             pc, npc                  130                 132  t 4120 
+2 enq             pc, npc                  132                 134  t 4130 
+[doDeqLdQ_MMIO_deq] LdQDeqEntry { tag: 'h00, instTag: InstTag { way: 'h1, ptr: 'h01, t: 'h03 }, memFunc: Ld, byteOrTagEn: tagged DataMemAccess <V True True True True True True True True False False False False False False False False  >, unsignedLd: False, acq: False, rel: False, dst: tagged Valid PhyDst { indx: 'h43, isFpuReg: False }, paddr: 'h0000000000001018, isMMIO: True, shiftedBE: tagged DataMemAccess <V False False False False False False False False True True True True True True True True  >, fault: tagged Invalid , allowCap: False, killed: tagged Invalid  }; TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > }; TaggedData { tag: False, data: <V 'h0000000080000000 'h0000000000000000  > }
+416: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+instret:3  PC:0x1ffff000000000000000000000000100c  instr:0x0182b283   iType:Ld    [doCommitNormalInst [0]]        416
+[Commit DataToPipeline ] 'h1ffff000000000000000000000000100c; InstTag { way: 'h1, ptr: 'h01, t: 'h03 }
+[Commit DataToPipeline ] 'h1ffff0000000000000000000000001010; InstTag { way: 'h0, ptr: 'h02, t: 'h04 }
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Jr, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Valid 'h43, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h0, ptr: 'h02, t: 'h04 }, spec_bits: 'h000, spec_tag: tagged Valid 'h0, regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+pc cleared
+fetch npc                 4108
+1 enq             pc, npc                  134                4108  t 4170 
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Jr, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, regs: PhyRegs { src1: tagged Valid 'h43, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h0, ptr: 'h02, t: 'h04 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+2 enq             pc, npc                 4108                4110  t 4180 
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Jr, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dst: tagged Invalid , tag: InstTag { way: 'h0, ptr: 'h02, t: 'h04 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000080000000 o: 'h0000000080000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000000001010, ppc: 'h000001ffffc0180040000000000000000, orig_inst: 'h00028067, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+2 enq             pc, npc                 4110                4112  t 4190 
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Jr, dst: tagged Invalid , tag: InstTag { way: 'h0, ptr: 'h02, t: 'h04 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000001014 o: 'h0000000000001014 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff0000000000000000000080000000, controlFlow: ControlFlow { pc: v: True a: 'h0000000000001010 o: 'h0000000000001010 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000000 o: 'h0000000080000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: True, newPcc: False, mispredict: True }, capException: tagged Invalid , check: tagged Valid BoundsCheck { authority_base: 'h0000000000000000, authority_top: 'h10000000000000000, authority_idx: 'h20, check_low: 'h0000000080000000, check_high: 'h00000000080000002, check_inclusive: True }, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[ALU DataToPipeline -           1] 'h1ffff0000000000000000000080000000; InstTag { way: 'h0, ptr: 'h02, t: 'h04 }
+id, mnpc, npc 4          2147483648                4104
+2 enq             pc, npc                 4112                4114  t 4200 
+instret:4  PC:0x1ffff0000000000000000000000001010  instr:0x00028067   iType:Jr    [doCommitNormalInst [0]]        420
+[Commit DataToPipeline ] 'h1ffff0000000000000000000000001010; InstTag { way: 'h0, ptr: 'h02, t: 'h04 }
+fetch npc                 4116
+1 enq             pc, npc                 4114                4116  t 4210 
+2 enq             pc, npc                 4116                4118  t 4220 
+2 enq             pc, npc                 4118                4120  t 4230 
+2 enq             pc, npc                 4120                4122  t 4240 
+fetch npc                 4124
+1 enq             pc, npc                 4122                4124  t 4250 
+426: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+2 enq             pc, npc                 4124                4126  t 4260 
+2 enq             pc, npc                 4126                4128  t 4270 
+2 enq             pc, npc                 4128                4130  t 4280 
+429: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001018, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001018, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+fetch npc                 4132
+1 enq             pc, npc                 4130                4132  t 4290 
+2 enq             pc, npc                 4132                4134  t 4300 
+2 enq             pc, npc                 4134                4136  t 4310 
+2 enq             pc, npc                 4136                4138  t 4320 
+fetch npc                 4140
+1 enq             pc, npc                 4138                4140  t 4330 
+2 enq             pc, npc                 4140                4142  t 4340 
+2 enq             pc, npc                 4142                4144  t 4350 
+2 enq             pc, npc                 4144                4146  t 4360 
+fetch npc                 4148
+1 enq             pc, npc                 4146                4148  t 4370 
+2 enq             pc, npc                 4148                4150  t 4380 
+439: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h0000000080000000, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h0000000000000000 'h0000000080000000  > } }
+2 enq             pc, npc                 4150                4152  t 4390 
+2 enq             pc, npc                 4152                4154  t 4400 
+fetch npc                 4156
+1 enq             pc, npc                 4154                4156  t 4410 
+442: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                 4156                4158  t 4420 
+2 enq             pc, npc                 4158                4160  t 4430 
+2 enq             pc, npc                 4160                4162  t 4440 
+fetch npc                 4164
+1 enq             pc, npc                 4162                4164  t 4450 
+2 enq             pc, npc                 4164                4166  t 4460 
+2 enq             pc, npc                 4166                4168  t 4470 
+2 enq             pc, npc                 4168                4170  t 4480 
+fetch npc                 4172
+1 enq             pc, npc                 4170                4172  t 4490 
+2 enq             pc, npc                 4172                4174  t 4500 
+2 enq             pc, npc                 4174                4176  t 4510 
+452: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+2 enq             pc, npc                 4176                4178  t 4520 
+fetch npc                 4180
+1 enq             pc, npc                 4178                4180  t 4530 
+2 enq             pc, npc                 4180                4182  t 4540 
+455: top.soc_top.corew.proc.rl_handle_read_req: Ld request
+    MMIOCRq { addr: 'h0000000000001020, func: tagged Ld , byteEn: <V True True True True True True True True False False False False False False False False  >, data: TaggedData { tag: False, data: <V 'haaaaaaaaaaaaaaaa 'haaaaaaaaaaaaaaaa  > }, loadTags: False }
+    AXI4_ARFlit { arid: 'h0, araddr: 'h0000000000001020, arlen: 'h00, arsize: AXI4_Size { val: 'h3 }, arburst: INCR, arlock: NORMAL, arcache: 'h0, arprot: 'h0, arqos: 'h0, arregion: 'h0, aruser: 'h0 }
+2 enq             pc, npc                 4182                4184  t 4550 
+2 enq             pc, npc                 4184                4186  t 4560 
+fetch npc                 4188
+1 enq             pc, npc                 4186                4188  t 4570 
+2 enq             pc, npc                 4188                4190  t 4580 
+2 enq             pc, npc                 4190                4192  t 4590 
+2 enq             pc, npc                 4192                4194  t 4600 
+fetch npc                 4196
+1 enq             pc, npc                 4194                4196  t 4610 
+2 enq             pc, npc                 4196                4198  t 4620 
+2 enq             pc, npc                 4198                4200  t 4630 
+2 enq             pc, npc                 4200                4202  t 4640 
+465: top.soc_top.corew.proc.rl_handle_read_rsps 
+    AXI4_RFlit { rid: 'h0, rdata: 'h54040000edfe0dd0, rresp: OKAY, rlast: True, ruser: 'h0 }
+    Response MMIO to core: MMIODataPRs { valid: True, data: TaggedData { tag: False, data: <V 'h54040000edfe0dd0 'h0000000000000000  > } }
+fetch npc                 4204
+1 enq             pc, npc                 4202                4204  t 4650 
+2 enq             pc, npc                 4204                4206  t 4660 
+2 enq             pc, npc                 4206                4208  t 4670 
+2 enq             pc, npc                 4208                4210  t 4680 
+fetch npc                 4212
+1 enq             pc, npc                 4210                4212  t 4690 
+2 enq             pc, npc                 4212                4214  t 4700 
+2 enq             pc, npc                 4214                4216  t 4710 
+2 enq             pc, npc                 4216                4218  t 4720 
+fetch npc                 4220
+1 enq             pc, npc                 4218                4220  t 4730 
+2 enq             pc, npc                 4220                4222  t 4740 
+2 enq             pc, npc                 4222                4224  t 4750 
+2 enq             pc, npc                 4224                4226  t 4760 
+fetch npc                 4228
+1 enq             pc, npc                 4226                4228  t 4770 
+2 enq             pc, npc                 4228                4230  t 4780 
+2 enq             pc, npc                 4230                4232  t 4790 
+2 enq             pc, npc                 4232                4234  t 4800 
+fetch npc                 4236
+1 enq             pc, npc                 4234                4236  t 4810 
+2 enq             pc, npc                 4236                4238  t 4820 
+2 enq             pc, npc                 4238                4240  t 4830 
+2 enq             pc, npc                 4240                4242  t 4840 
+1042: Mem_Model read  [0x1] => 0x5391e1930040006f000f546334202f73000f0067000f0463fe0f0f1380000f17
+1055: Mem_Model read  [0x1fbef84] => 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+decode next_pc ival                65664
+decode next_pc ival
+rename_deq sent
+ decode npc           2147483724
+decode module[0] pc, npc  680559541545018392099120684369354686464680559541545018392099120684369354686540
+decode module[0] flush  1
+pc cleared
+fetch npc           2147483724
+1 enq             pc, npc                 4242          2147483724  t 10820 
+[Rename DataToPipeline] 'h1ffff0000000000000000000080000000; InstTag { way: 'h1, ptr: 'h02, t: 'h05 }
+id, npc 5          2147483724
+2 enq             pc, npc           2147483724          2147483726  t 10830 
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: J, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h0000004c }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h02, t: 'h05 }, spec_bits: 'h000, spec_tag: tagged Valid 'h0, regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+2 enq             pc, npc           2147483726          2147483728  t 10840 
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: J, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h0000004c }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h02, t: 'h05 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+2 enq             pc, npc           2147483728          2147483730  t 10850 
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: J, execFunc: tagged Br AT, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h0000004c }, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h02, t: 'h05 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000080000000, ppc: 'h1ffff000000000000000000008000004c, orig_inst: 'h04c0006f, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: J, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h02, t: 'h05 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000080000004 o: 'h0000000080000004 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff000000000000000000008000004c, controlFlow: ControlFlow { pc: v: True a: 'h0000000080000000 o: 'h0000000080000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h000000008000004c o: 'h000000008000004c b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: True, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Valid BoundsCheck { authority_base: 'h0000000000000000, authority_top: 'h10000000000000000, authority_idx: 'h20, check_low: 'h000000008000004c, check_high: 'h0000000008000004e, check_inclusive: True }, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[ALU DataToPipeline -           1] 'h1ffff000000000000000000008000004c; InstTag { way: 'h1, ptr: 'h02, t: 'h05 }
+fetch npc           2147483732
+1 enq             pc, npc           2147483730          2147483732  t 10860 
+2 enq             pc, npc           2147483732          2147483734  t 10870 
+instret:5  PC:0x1ffff0000000000000000000080000000  instr:0x04c0006f   iType:J    [doCommitNormalInst [0]]       1087
+[Commit DataToPipeline ] 'h1ffff0000000000000000000080000000; InstTag { way: 'h1, ptr: 'h02, t: 'h05 }
+2 enq             pc, npc           2147483734          2147483736  t 10880 
+2 enq             pc, npc           2147483736          2147483738  t 10890 
+fetch npc           2147483740
+1 enq             pc, npc           2147483738          2147483740  t 10900 
+2 enq             pc, npc           2147483740          2147483742  t 10910 
+2 enq             pc, npc           2147483742          2147483744  t 10920 
+2 enq             pc, npc           2147483744          2147483746  t 10930 
+fetch npc           2147483748
+1 enq             pc, npc           2147483746          2147483748  t 10940 
+2 enq             pc, npc           2147483748          2147483750  t 10950 
+2 enq             pc, npc           2147483750          2147483752  t 10960 
+2 enq             pc, npc           2147483752          2147483754  t 10970 
+fetch npc           2147483756
+1 enq             pc, npc           2147483754          2147483756  t 10980 
+2 enq             pc, npc           2147483756          2147483758  t 10990 
+2 enq             pc, npc           2147483758          2147483760  t 11000 
+1101: Mem_Model read  [0x2] => 0x30529073010282930000029700051063f1402573ff9ff06ffc3f202300001f17
+2 enq             pc, npc           2147483760          2147483762  t 11010 
+fetch npc           2147483764
+1 enq             pc, npc           2147483762          2147483764  t 11020 
+2 enq             pc, npc           2147483764          2147483766  t 11030 
+2 enq             pc, npc           2147483766          2147483768  t 11040 
+2 enq             pc, npc           2147483768          2147483770  t 11050 
+fetch npc           2147483772
+1 enq             pc, npc           2147483770          2147483772  t 11060 
+2 enq             pc, npc           2147483772          2147483774  t 11070 
+2 enq             pc, npc           2147483774          2147483776  t 11080 
+2 enq             pc, npc           2147483776          2147483778  t 11090 
+fetch npc           2147483780
+1 enq             pc, npc           2147483778          2147483780  t 11100 
+1111: Mem_Model read  [0x3] => 0x3b029073fff28293035292930010029b30529073024282930000029718005073
+2 enq             pc, npc           2147483780          2147483782  t 11110 
+2 enq             pc, npc           2147483782          2147483784  t 11120 
+2 enq             pc, npc           2147483784          2147483786  t 11130 
+fetch npc           2147483788
+1 enq             pc, npc           2147483786          2147483788  t 11140 
+2 enq             pc, npc           2147483788          2147483790  t 11150 
+2 enq             pc, npc           2147483790          2147483792  t 11160 
+2 enq             pc, npc           2147483792          2147483794  t 11170 
+fetch npc           2147483796
+1 enq             pc, npc           2147483794          2147483796  t 11180 
+2 enq             pc, npc           2147483796          2147483798  t 11190 
+2 enq             pc, npc           2147483798          2147483800  t 11200 
+2 enq             pc, npc           2147483800          2147483802  t 11210 
+fetch npc           2147483804
+1 enq             pc, npc           2147483802          2147483804  t 11220 
+2 enq             pc, npc           2147483804          2147483806  t 11230 
+2 enq             pc, npc           2147483806          2147483808  t 11240 
+2 enq             pc, npc           2147483808          2147483810  t 11250 
+fetch npc           2147483812
+1 enq             pc, npc           2147483810          2147483812  t 11260 
+2 enq             pc, npc           2147483812          2147483814  t 11270 
+2 enq             pc, npc           2147483814          2147483816  t 11280 
+2 enq             pc, npc           2147483816          2147483818  t 11290 
+fetch npc           2147483820
+1 enq             pc, npc           2147483818          2147483820  t 11300 
+2 enq             pc, npc           2147483820          2147483822  t 11310 
+decode next_pc ival          34359739586
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686540680559541545018392099120684369354686544
+decode module[0] flush  0
+decode next_pc ival                    2
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686544680559541545018392099120684369354686548
+decode module[1] flush  0
+deq pcfifo          2147483732
+2 enq             pc, npc           2147483822          2147483824  t 11320 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686548680559541545018392099120684369354686552
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686552680559541545018392099120684369354686556
+decode module[1] flush  0
+deq pcfifo          2147483740
+2 enq             pc, npc           2147483824          2147483826  t 11330 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686556680559541545018392099120684369354686560
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686560680559541545018392099120684369354686564
+decode module[1] flush  0
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h46, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h03, t: 'h06 }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+deq pcfifo          2147483748
+fetch npc           2147483828
+1 enq             pc, npc           2147483826          2147483828  t 11340 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686564680559541545018392099120684369354686568
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686568680559541545018392099120684369354686572
+decode module[1] flush  0
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h46, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h03, t: 'h06 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+deq pcfifo          2147483756
+2 enq             pc, npc           2147483828          2147483830  t 11350 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686572680559541545018392099120684369354686576
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686576680559541545018392099120684369354686580
+decode module[1] flush  0
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrs, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrMHARTID, scr: tagged Invalid , imm: tagged Invalid  }, dst: tagged Valid PhyDst { indx: 'h46, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h03, t: 'h06 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff000000000000000000008000004c, ppc: 'h1ffff0000000000000000000080000050, orig_inst: 'hf1402573, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+deq pcfifo          2147483764
+2 enq             pc, npc           2147483830          2147483832  t 11360 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686580680559541545018392099120684369354686584
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686584680559541545018392099120684369354686588
+decode module[1] flush  0
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Csr, dst: tagged Valid PhyDst { indx: 'h46, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h03, t: 'h06 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged CSRData 'h000001ffffc0180040000000000000000, controlFlow: ControlFlow { pc: v: True a: 'h000000008000004c o: 'h000000008000004c b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000050 o: 'h0000000080000050 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           0] 'h1ffff0000000000000000000080000050; InstTag { way: 'h0, ptr: 'h03, t: 'h06 }
+id, mnpc, npc 6          214748372812297829382473034410
+deq pcfifo          2147483772
+2 enq             pc, npc           2147483832          2147483834  t 11370 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686588680559541545018392099120684369354686592
+decode module[0] flush  0
+instret:6  PC:0x1ffff000000000000000000008000004c  instr:0xf1402573   iType:Csr    [doCommitSystemInst]       1137
+fetch npc           2147483836
+1 enq             pc, npc           2147483834          2147483836  t 11380 
+2 enq             pc, npc           2147483836          2147483838  t 11390 
+2 enq             pc, npc           2147483838          2147483840  t 11400 
+2 enq             pc, npc           2147483840          2147483842  t 11410 
+fetch npc           2147483844
+1 enq             pc, npc           2147483842          2147483844  t 11420 
+2 enq             pc, npc           2147483844          2147483846  t 11430 
+2 enq             pc, npc           2147483846          2147483848  t 11440 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686544680559541545018392099120684369354686548
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686548680559541545018392099120684369354686552
+decode module[1] flush  0
+deq pcfifo          2147483780
+2 enq             pc, npc           2147483848          2147483850  t 11450 
+[Rename DataToPipeline] 'h1ffff0000000000000000000080000050; InstTag { way: 'h1, ptr: 'h03, t: 'h07 }
+id, npc 7                4112
+[Rename DataToPipeline] 'h1ffff0000000000000000000080000054; InstTag { way: 'h0, ptr: 'h04, t: 'h08 }
+id, npc 8                   4
+fetch npc           2147483852
+1 enq             pc, npc           2147483850          2147483852  t 11460 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686552680559541545018392099120684369354686556
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686556680559541545018392099120684369354686560
+decode module[1] flush  0
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h48, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h04, t: 'h08 }, spec_bits: 'h001, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Br, execFunc: tagged Br Neq, capFunc: tagged Other , capChecks: CapChecks {rn1 'h0a, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dpTrain: TourTrainInfo { globalHist: 'h000, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Valid 'h46, src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h03, t: 'h07 }, spec_bits: 'h000, spec_tag: tagged Valid 'h0, regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+deq pcfifo          2147483788
+2 enq             pc, npc           2147483852          2147483854  t 11470 
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Br, execFunc: tagged Br Neq, capFunc: tagged Other , capChecks: CapChecks {rn1 'h0a, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, regs: PhyRegs { src1: tagged Valid 'h46, src2: tagged Valid 'h00, src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h03, t: 'h07 }, dpTrain: TourTrainInfo { globalHist: 'h000, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h48, isFpuReg: False } }, tag: InstTag { way: 'h0, ptr: 'h04, t: 'h08 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h001 }
+[Rename DataToPipeline] 'h1ffff0000000000000000000080000058; InstTag { way: 'h1, ptr: 'h04, t: 'h09 }
+id, npc 9                4112
+2 enq             pc, npc           2147483854          2147483856  t 11480 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686560680559541545018392099120684369354686564
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686564680559541545018392099120684369354686568
+decode module[1] flush  0
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Br, execFunc: tagged Br Neq, capFunc: tagged Other , capChecks: CapChecks {rn1 'h0a, rn2 'h00, bounds check: auth Pcc, low Src1Addr, high Src1AddrPlus2, inclusive True}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h03, t: 'h07 }, dpTrain: TourTrainInfo { globalHist: 'h000, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000080000050, ppc: 'h1ffff0000000000000000000080000054, orig_inst: 'h00051063, spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Auipc, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dst: tagged Valid PhyDst { indx: 'h48, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h04, t: 'h08 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000080000054, ppc: 'h1ffff0000000000000000000080000058, orig_inst: 'h00000297, spec_tag: tagged Invalid  }, spec_bits: 'h001 }
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000010 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Valid 'h48, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h49, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h04, t: 'h09 }, spec_bits: 'h001, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+deq pcfifo          2147483796
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Br, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h03, t: 'h07 }, dpTrain: TourTrainInfo { globalHist: 'h000, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff0000000000000000000080000054, controlFlow: ControlFlow { pc: v: True a: 'h0000000080000050 o: 'h0000000080000050 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000054 o: 'h0000000080000054 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Valid 'h0 }, spec_bits: 'h000 }
+[ALU DataToPipeline -           1] 'h1ffff0000000000000000000080000054; InstTag { way: 'h1, ptr: 'h03, t: 'h07 }
+id, mnpc, npc 7          2147483732                4112
+2 enq             pc, npc           2147483856          2147483858  t 11490 
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Auipc, dst: tagged Valid PhyDst { indx: 'h48, isFpuReg: False }, tag: InstTag { way: 'h0, ptr: 'h04, t: 'h08 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000080000054 o: 'h0000000080000054 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff0000000000000000000080000058, controlFlow: ControlFlow { pc: v: True a: 'h0000000080000054 o: 'h0000000080000054 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000058 o: 'h0000000080000058 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h001 }
+[ALU DataToPipeline -           0] 'h1ffff0000000000000000000080000058; InstTag { way: 'h0, ptr: 'h04, t: 'h08 }
+id, mnpc, npc 8          2147483736                   4
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000010 }, regs: PhyRegs { src1: tagged Valid 'h48, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Valid PhyDst { indx: 'h49, isFpuReg: False } }, tag: InstTag { way: 'h1, ptr: 'h04, t: 'h09 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h001 }
+fetch npc           2147483860
+1 enq             pc, npc           2147483858          2147483860  t 11500 
+instret:7  PC:0x1ffff0000000000000000000080000050  instr:0x00051063   iType:Br    [doCommitNormalInst [0]]       1150
+[Commit DataToPipeline ] 'h1ffff0000000000000000000080000050; InstTag { way: 'h1, ptr: 'h03, t: 'h07 }
+instret:8  PC:0x1ffff0000000000000000000080000054  instr:0x00000297   iType:Auipc    [doCommitNormalInst [1]]       1150
+[Commit DataToPipeline ] 'h1ffff0000000000000000000080000054; InstTag { way: 'h0, ptr: 'h04, t: 'h08 }
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Alu, execFunc: tagged Alu Add, capFunc: tagged Other , capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Invalid , imm: tagged Valid 'h00000010 }, dst: tagged Valid PhyDst { indx: 'h49, isFpuReg: False }, tag: InstTag { way: 'h1, ptr: 'h04, t: 'h09 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000080000054 o: 'h0000000080000054 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000080000058, ppc: 'h1ffff000000000000000000008000005c, orig_inst: 'h01028293, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Alu, dst: tagged Valid PhyDst { indx: 'h49, isFpuReg: False }, tag: InstTag { way: 'h1, ptr: 'h04, t: 'h09 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000080000064 o: 'h0000000080000064 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged PPC 'h1ffff000000000000000000008000005c, controlFlow: ControlFlow { pc: v: True a: 'h0000000080000058 o: 'h0000000080000058 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h000000008000005c o: 'h000000008000005c b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           1] 'h1ffff000000000000000000008000005c; InstTag { way: 'h1, ptr: 'h04, t: 'h09 }
+id, mnpc, npc 9          2147483740                4112
+2 enq             pc, npc           2147483860          2147483862  t 11510 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686568680559541545018392099120684369354686572
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686572680559541545018392099120684369354686576
+decode module[1] flush  0
+deq pcfifo          2147483804
+2 enq             pc, npc           2147483862          2147483864  t 11520 
+instret:9  PC:0x1ffff0000000000000000000080000058  instr:0x01028293   iType:Alu    [doCommitNormalInst [0]]       1152
+[Commit DataToPipeline ] 'h1ffff0000000000000000000080000058; InstTag { way: 'h1, ptr: 'h04, t: 'h09 }
+2 enq             pc, npc           2147483864          2147483866  t 11530 
+fetch npc           2147483868
+1 enq             pc, npc           2147483866          2147483868  t 11540 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686576680559541545018392099120684369354686580
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686580680559541545018392099120684369354686584
+decode module[1] flush  0
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Scr, execFunc: tagged Other , capFunc: tagged CapModify tagged SpecialRW tagged TVEC Write, capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Valid scrAddrMTCC, imm: tagged Invalid  }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Valid 'h49, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h0, ptr: 'h05, t: 'h0a }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+deq pcfifo          2147483812
+2 enq             pc, npc           2147483868          2147483870  t 11550 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686584680559541545018392099120684369354686588
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686588680559541545018392099120684369354686592
+decode module[1] flush  0
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Scr, execFunc: tagged Other , capFunc: tagged CapModify tagged SpecialRW tagged TVEC Write, capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Valid scrAddrMTCC, imm: tagged Invalid  }, regs: PhyRegs { src1: tagged Valid 'h49, src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h0, ptr: 'h05, t: 'h0a }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+deq pcfifo          2147483820
+2 enq             pc, npc           2147483870          2147483872  t 11560 
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Scr, execFunc: tagged Other , capFunc: tagged CapModify tagged SpecialRW tagged TVEC Write, capChecks: CapChecks {rn1 'h05, rn2 'h05}, csr: tagged Invalid , scr: tagged Valid scrAddrMTCC, imm: tagged Invalid  }, dst: tagged Invalid , tag: InstTag { way: 'h0, ptr: 'h05, t: 'h0a }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000080000064 o: 'h0000000080000064 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: True a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, pc: 'h1ffff000000000000000000008000005c, ppc: 'h1ffff0000000000000000000080000060, orig_inst: 'h30529073, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+2 enq             pc, npc           2147483872          2147483874  t 11570 
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Scr, dst: tagged Invalid , tag: InstTag { way: 'h0, ptr: 'h05, t: 'h0a }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged CSRData 'h1ffff0000000000000000000080000064, controlFlow: ControlFlow { pc: v: True a: 'h000000008000005c o: 'h000000008000005c b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000060 o: 'h0000000080000060 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           0] 'h1ffff0000000000000000000080000060; InstTag { way: 'h0, ptr: 'h05, t: 'h0a }
+id, mnpc, npc10          214748374412297829382473034410
+fetch npc           2147483876
+1 enq             pc, npc           2147483874          2147483876  t 11580 
+instret:10  PC:0x1ffff000000000000000000008000005c  instr:0x30529073   iType:Scr    [doCommitSystemInst]       1158
+2 enq             pc, npc           2147483876          2147483878  t 11590 
+2 enq             pc, npc           2147483878          2147483880  t 11600 
+2 enq             pc, npc           2147483880          2147483882  t 11610 
+fetch npc           2147483884
+1 enq             pc, npc           2147483882          2147483884  t 11620 
+2 enq             pc, npc           2147483884          2147483886  t 11630 
+1164: Mem_Model read  [0x4] => 0x3040507330305073302050733052907301828293000002973a02907301f00293
+2 enq             pc, npc           2147483886          2147483888  t 11640 
+2 enq             pc, npc           2147483888          2147483890  t 11650 
+fetch npc           2147483892
+1 enq             pc, npc           2147483890          2147483892  t 11660 
+2 enq             pc, npc           2147483892          2147483894  t 11670 
+2 enq             pc, npc           2147483894          2147483896  t 11680 
+2 enq             pc, npc           2147483896          2147483898  t 11690 
+fetch npc           2147483900
+1 enq             pc, npc           2147483898          2147483900  t 11700 
+2 enq             pc, npc           2147483900          2147483902  t 11710 
+2 enq             pc, npc           2147483902          2147483904  t 11720 
+2 enq             pc, npc           2147483904          2147483906  t 11730 
+1174: Mem_Model read  [0x5] => 0xff0000f0005586301f515130010051330529073f60282930000029700000193
+fetch npc           2147483908
+1 enq             pc, npc           2147483906          2147483908  t 11740 
+2 enq             pc, npc           2147483908          2147483910  t 11750 
+2 enq             pc, npc           2147483910          2147483912  t 11760 
+2 enq             pc, npc           2147483912          2147483914  t 11770 
+fetch npc           2147483916
+1 enq             pc, npc           2147483914          2147483916  t 11780 
+2 enq             pc, npc           2147483916          2147483918  t 11790 
+2 enq             pc, npc           2147483918          2147483920  t 11800 
+2 enq             pc, npc           2147483920          2147483922  t 11810 
+fetch npc           2147483924
+1 enq             pc, npc           2147483922          2147483924  t 11820 
+2 enq             pc, npc           2147483924          2147483926  t 11830 
+2 enq             pc, npc           2147483926          2147483928  t 11840 
+2 enq             pc, npc           2147483928          2147483930  t 11850 
+fetch npc           2147483932
+1 enq             pc, npc           2147483930          2147483932  t 11860 
+2 enq             pc, npc           2147483932          2147483934  t 11870 
+2 enq             pc, npc           2147483934          2147483936  t 11880 
+2 enq             pc, npc           2147483936          2147483938  t 11890 
+fetch npc           2147483940
+1 enq             pc, npc           2147483938          2147483940  t 11900 
+2 enq             pc, npc           2147483940          2147483942  t 11910 
+2 enq             pc, npc           2147483942          2147483944  t 11920 
+2 enq             pc, npc           2147483944          2147483946  t 11930 
+fetch npc           2147483948
+1 enq             pc, npc           2147483946          2147483948  t 11940 
+2 enq             pc, npc           2147483948          2147483950  t 11950 
+2 enq             pc, npc           2147483950          2147483952  t 11960 
+2 enq             pc, npc           2147483952          2147483954  t 11970 
+decode next_pc ival                65792
+decode next_pc ival
+rename_deq sent
+ decode npc                 4112
+decode module[0] pc, npc  680559541545018392099120684369354686560680559541545018392099120684369354686564
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686564680559541545018392099120684369354686568
+decode module[1] flush  0
+deq pcfifo          2147483828
+clear npc_fifo_rename
+fetch npc           2147483956
+1 enq             pc, npc           2147483954          2147483956  t 12010 
+decode next_pc ival                65792
+decode next_pc ival
+ decode npc           2147483836
+decode module[0] pc, npc  680559541545018392099120684369354686568680559541545018392099120684369354686572
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686572680559541545018392099120684369354686576
+decode module[1] flush  0
+deq pcfifo          2147483836
+2 enq             pc, npc           2147483956          2147483958  t 12020 
+decode next_pc ival          34359741378
+decode next_pc ival
+ decode npc           2147483840
+decode module[0] pc, npc  680559541545018392099120684369354686576680559541545018392099120684369354686580
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686580680559541545018392099120684369354686584
+decode module[1] flush  0
+[doDispatchAlu] ToReservationStation { data: AluRSData { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrw, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrSATP, scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False } }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h05, t: 'h0b }, spec_bits: 'h000, spec_tag: tagged Invalid , regs_ready: RegsReady { src1: True, src2: True, src3: True, dst: True } }
+deq pcfifo          2147483844
+2 enq             pc, npc           2147483958          2147483960  t 12030 
+decode next_pc ival          34359741440
+decode next_pc ival
+ decode npc           2147483852
+decode module[0] pc, npc  680559541545018392099120684369354686584680559541545018392099120684369354686588
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686588680559541545018392099120684369354686592
+decode module[1] flush  0
+[doRegReadAlu] ToSpecFifo { data: AluDispatchToRegRead { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrw, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrSATP, scr: tagged Invalid , imm: tagged Valid 'h00000000 }, regs: PhyRegs { src1: tagged Invalid , src2: tagged Invalid , src3: tagged Invalid , dst: tagged Invalid  }, tag: InstTag { way: 'h1, ptr: 'h05, t: 'h0b }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+deq pcfifo          2147483852
+2 enq             pc, npc           2147483960          2147483962  t 12040 
+decode next_pc ival          34359741634
+decode next_pc ival
+ decode npc           2147483856
+decode module[0] pc, npc  680559541545018392099120684369354686592680559541545018392099120684369354686596
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686596680559541545018392099120684369354686600
+decode module[1] flush  0
+[doExeAlu] ToSpecFifo { data: AluRegReadToExe { dInst: DecodedInst { iType: Csr, execFunc: tagged Alu Csrw, capFunc: tagged Other , capChecks: CapChecks {rn1 'h00, rn2 'h00}, csr: tagged Valid csrAddrSATP, scr: tagged Invalid , imm: tagged Valid 'h00000000 }, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h05, t: 'h0b }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, rVal1: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, rVal2: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, pc: 'h1ffff0000000000000000000080000060, ppc: 'h1ffff0000000000000000000080000064, orig_inst: 'h18005073, spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+deq pcfifo          2147483860
+fetch npc           2147483964
+1 enq             pc, npc           2147483962          2147483964  t 12050 
+decode next_pc ival          34359741696
+decode next_pc ival
+ decode npc           2147483868
+decode module[0] pc, npc  680559541545018392099120684369354686600680559541545018392099120684369354686604
+decode module[0] flush  0
+decode next_pc ival                   64
+decode next_pc ival
+ decode npc                    4
+decode module[1] pc, npc  680559541545018392099120684369354686604680559541545018392099120684369354686608
+decode module[1] flush  0
+[doFinishAlu] ToSpecFifo { data: AluExeToFinish { iType: Csr, dst: tagged Invalid , tag: InstTag { way: 'h1, ptr: 'h05, t: 'h0b }, dpTrain: TourTrainInfo { globalHist: 'haaa, localHist: 'h2aa, globalTaken: True, localTaken: False }, isCompressed: False, data: v: False a: 'h0000000000000000 o: 'h0000000000000000 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h0000 hp: 'h000 ot: 'h3ffff f: 'h0, csrData: tagged CSRData 'h000001ffffc0180040000000000000000, controlFlow: ControlFlow { pc: v: True a: 'h0000000080000060 o: 'h0000000080000060 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, nextPc: v: True a: 'h0000000080000064 o: 'h0000000080000064 b: 'h0000000000000000 t: 'h10000000000000000 sp: 'h000f hp: 'hfff ot: 'h3ffff f: 'h0, taken: False, newPcc: False, mispredict: False }, capException: tagged Invalid , check: tagged Invalid , spec_tag: tagged Invalid  }, spec_bits: 'h000 }
+[ALU DataToPipeline -           0] 'h1ffff0000000000000000000080000064; InstTag { way: 'h1, ptr: 'h05, t: 'h0b }
+id, mnpc, npc11          214748374812297829382473034410
+deq pcfifo          2147483868
+2 enq             pc, npc           2147483964          2147483966  t 12060 
+instret:11  PC:0x1ffff0000000000000000000080000060  instr:0x18005073   iType:Csr    [doCommitSystemInst]       1206
+2 enq             pc, npc           2147483966          2147483968  t 12070 
+2 enq             pc, npc           2147483968          2147483970  t 12080 
+fetch npc           2147483972
+1 enq             pc, npc           2147483970          2147483972  t 12090 
+2 enq             pc, npc           2147483972          2147483974  t 12100 
+2 enq             pc, npc           2147483974          2147483976  t 12110 
+2 enq             pc, npc           2147483976          2147483978  t 12120 
+fetch npc           2147483980
+1 enq             pc, npc           2147483978          2147483980  t 12130 
+2 enq             pc, npc           2147483980          2147483982  t 12140 
+2 enq             pc, npc           2147483982          2147483984  t 12150 
+2 enq             pc, npc           2147483984          2147483986  t 12160 
+fetch npc           2147483988
+1 enq             pc, npc           2147483986          2147483988  t 12170 
+2 enq             pc, npc           2147483988          2147483990  t 12180 
+2 enq             pc, npc           2147483990          2147483992  t 12190 
+2 enq             pc, npc           2147483992          2147483994  t 12200 
+fetch npc           2147483996
+1 enq             pc, npc           2147483994          2147483996  t 12210 
+2 enq             pc, npc           2147483996          2147483998  t 12220 
+2 enq             pc, npc           2147483998          2147484000  t 12230 
+2 enq             pc, npc           2147484000          2147484002  t 12240 

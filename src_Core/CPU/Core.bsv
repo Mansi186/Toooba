@@ -267,6 +267,7 @@ module mkCore#(CoreId coreId)(Core);
 
     Reg#(Bool) started <- mkReg(False);
 
+
    // ================================================================
 
 `ifdef INCLUDE_GDB_CONTROL
@@ -395,7 +396,7 @@ module mkCore#(CoreId coreId)(Core);
 
         Vector#(AluExeNum, FIFO#(FetchTrainBP)) trainBPQ <- replicateM(mkFIFO);
         Vector#(AluExeNum, AluExePipeline) aluExe;
-        //Reg#(Bool) flushexe  <- mkReg(False);
+       
         for(Integer i = 0; i < valueof(AluExeNum); i = i+1) begin
             Vector#(2, SendBypass) sendBypassIfc; // exe and finish
             for(Integer sendPort = 0; sendPort < 2; sendPort = sendPort + 1) begin
@@ -433,11 +434,11 @@ module mkCore#(CoreId coreId)(Core);
                 method Action sendExeDataToPipeline (InstTag inst_tag, Bool taken, CapMem new_pc, Bool exception);
                     //exefifo.enqS[i].enq(NextPcData { instId : inst_tag.id  , nextpc : new_pc }); //or exefifo.put? - same thing
                     $display("[ALU DataToPipeline - %d] ", i, fshow(new_pc),
-                                 "; ", fshow(inst_tag));
-                    //if(!flushexe)
+                                 "; ", fshow(inst_tag));                    
                     let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
                     Addr npc = truncate(new_pc);
-                    let flushexe <- branchpred.execute[i].putExecutedInst(inst_id, taken, npc, exception);  //tag -> id?
+                    //if(!flushexe)
+                    let flushexe <- branchpred.execute[i].putExecutedInst(inst_id, taken, npc, exception);   //add if here
                 endmethod 
 
                 method Action redirect(CapMem new_pc, SpecTag spec_tag, InstTag inst_tag);
@@ -573,6 +574,8 @@ module mkCore#(CoreId coreId)(Core);
     Reg#(Bool)  update_vm_info <- mkReg(False);
     Reg#(Bool)  flush_reservation <- mkReg(False);
 
+    Reg#(Bool)  flushcommit <- mkReg(False);
+
 `ifdef SECURITY_OR_INCLUDE_GDB_CONTROL
     Reg#(Bool)  flush_caches <- mkReg(False);
     Reg#(Bool)  flush_brpred <- mkReg(False);
@@ -668,7 +671,7 @@ module mkCore#(CoreId coreId)(Core);
                                  "; ", fshow(inst_tag)); 
             let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
             Addr pc_ = truncate(pc);
-            let flushrename <- branchpred.rename[i].putRenameInst(inst_id, pc_);
+            branchpred.rename[i].putRenameInst(inst_id, pc_);  //no flush here
         endmethod 
 
         method Bool checkDeadlock;
@@ -749,7 +752,13 @@ module mkCore#(CoreId coreId)(Core);
             //let inst_id = 2*valueOf(inst_tag.ptr) + valueOf(inst_tag.way);
             let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
             Addr npc = truncate(new_pc);
-            let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);
+            if(i==0) begin
+                let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);  //add if here--how
+                flushcommit <= flush;
+            end 
+            else if (!flushcommit)
+                let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);
+
         endmethod 
         
         
@@ -1493,7 +1502,7 @@ module mkCore#(CoreId coreId)(Core);
    rule rl_debug_resume (   (rg_core_run_state == CORE_HALTED)
                          && (f_run_halt_reqs.first == True)
 
-                         // prioritise gpr/fpr/csr read/write requests before resuming
+                         // ptarioritise gpr/fpr/csr read/write requests before resuming
                          && (! f_gpr_reqs.notEmpty)
 `ifdef ISA_F
                          && (! f_fpr_reqs.notEmpty)
