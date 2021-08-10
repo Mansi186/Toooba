@@ -752,8 +752,8 @@ module mkCore#(CoreId coreId)(Core);
             //let inst_id = 2*valueOf(inst_tag.ptr) + valueOf(inst_tag.way);
             let inst_id = 2*inst_tag.ptr + extend(inst_tag.way);
             Addr npc = truncate(new_pc);
-            if(i==0) begin
-                let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);  //add if here--how
+            if(i==0) begin                      //only works for supsize==2
+                let flush <- branchpred.commit[i].putCommittedInst(inst_id, committed, npc);  
                 flushcommit <= flush;
             end 
             else if (!flushcommit)
@@ -778,11 +778,6 @@ module mkCore#(CoreId coreId)(Core);
 `endif
         endmethod
 
-        /*rule to read n deq from commitfifo and send to branch predictor
-        rule committoBranchPred:
-            flush <- fetchstage.branchpredictor..commit[ii].putCommittedInst()  //flush - reg or wire?
-        endrule
-*/
 `ifdef PERFORMANCE_MONITORING
 `ifdef CONTRACTS_VERIFY
         method Action updateTargets(Vector#(SupSize, Maybe#(CapMem)) targets);
